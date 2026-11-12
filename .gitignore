@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+/data/
+.claude/
+CLAUDE.md
+.DS_Store
+.netrc
+*.env
+*.tif
+*.zip

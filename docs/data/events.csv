@@ -1,0 +1,12 @@
+id,start,start_time_utc,end,kind,published_loss_mm3,published_loss_sd_mm3,published_dike_mm3,loss_source
+1,2023-11-10,16:55,2023-11-11,dike,77.8,1.2,132.7,Parks et al. 2025 Table 1 (from Sigmundsson et al. 2024)
+2,2023-12-18,20:47,2023-12-21,dike+eruption,10.6,0.3,9.9,Parks et al. 2025 Table 1
+3,2024-01-14,02:55,2024-01-16,dike+eruption,10.0,0.5,21.1,Parks et al. 2025 Table 1
+4,2024-02-08,05:07,2024-02-09,dike+eruption,6.7,0.3,3.4,Parks et al. 2025 Table 1
+5,2024-03-02,14:37,2024-03-02,dike,2.0,0.7,2.6,Parks et al. 2025 Table 1
+6,2024-03-16,19:29,2024-05-08,dike+eruption,6.9,0.5,1.4,Parks et al. 2025 Table 1
+7,2024-05-29,10:42,2024-06-22,dike+eruption,12.7,0.6,4.1,Parks et al. 2025 Table 1
+8,2024-08-22,20:48,2024-09-05,dike+eruption,19.7,0.4,6.0,Parks et al. 2025 Table 1
+9,2024-11-20,22:20,2024-12-08,dike+eruption,12.8,0.3,0.9,Parks et al. 2025 Table 1
+10,2025-04-01,,2025-04-01,dike+eruption,35,,100,Parks et al. EGU26-6017 abstract (IMO news at the time: ~30)
+11,2025-07-16,,2025-08-05,dike+eruption,12,,16,Parks et al. EGU26-6017 abstract (IMO news: 11-13)
