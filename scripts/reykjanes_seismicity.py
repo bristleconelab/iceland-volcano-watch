@@ -37,8 +37,9 @@ def inbox(df, b):
     return df[(df.longitude >= b[0]) & (df.longitude <= b[2]) & (df.latitude >= b[1]) & (df.latitude <= b[3])]
 
 
-def load(path):
-    d = pd.read_csv(path)
+def load(paths):
+    d = pd.concat([pd.read_csv(p) for p in paths], ignore_index=True).drop_duplicates("event_id")
+    path = "+".join(Path(p).name for p in paths)
     d["time"] = pd.to_datetime(d["time"], utc=True, format="ISO8601").dt.tz_localize(None)
     n0 = len(d)
     d = d[d.evaluation_mode == "manual"]
@@ -49,6 +50,24 @@ def load(path):
     return d
 
 
+def compare_systems(sil, sc, tol_s=3.0, tol_km=3.0):
+    """Match SIL and SeisComP reviewed events in their common period; counts per month and magnitude offset."""
+    t0, t1 = max(sil.time.min(), sc.time.min()), min(sil.time.max(), sc.time.max())
+    a = sil[(sil.time >= t0) & (sil.time <= t1)].sort_values("time").reset_index(drop=True)
+    b = sc[(sc.time >= t0) & (sc.time <= t1)].sort_values("time").reset_index(drop=True)
+    m = pd.merge_asof(b, a[["time", "latitude", "longitude", "magnitude"]].rename(
+        columns={"latitude": "lat_sil", "longitude": "lon_sil", "magnitude": "m_sil"}).assign(t_sil=lambda d: d.time),
+        on="time", direction="nearest", tolerance=pd.Timedelta(seconds=tol_s))
+    m = m.dropna(subset=["m_sil"])
+    m = m[sl.haversine_km(m.latitude, m.longitude, m.lat_sil, m.lon_sil) <= tol_km]
+    dm = m.magnitude - m.m_sil
+    out = dict(period=f"{t0.date()}..{t1.date()}", n_sil=len(a), n_seiscomp=len(b), n_matched=len(m),
+               dm_median=float(dm.median()), dm_iqr=[float(dm.quantile(.25)), float(dm.quantile(.75))],
+               dm_median_m_ge_1=float(dm[m.m_sil >= 1].median()))
+    print("SIL vs SeisComP:", out)
+    (DATA / "sil_vs_seiscomp.json").write_text(json.dumps(out, indent=1))
+
+
 def stats_block(name, m_timeordered, dm=0.1, rng=0):
     m = np.asarray(m_timeordered)
     out = dict(set=name, n_all=int(m.size))
@@ -57,7 +76,10 @@ def stats_block(name, m_timeordered, dm=0.1, rng=0):
     maxc = sl.mc_maxc(m, dm, 0.2)
     gft, r = sl.mc_gft(m, dm)
     mbs = sl.mc_mbs(m, dm)
-    mc = float(np.nanmax([maxc, gft, mbs]))  # conservative choice
+    # conservative of MAXC+0.2 and GFT; MBS is reported but not used when it rests on < 200 events
+    mc = float(np.nanmax([maxc, gft]))
+    if np.isfinite(mbs) and (sl.bin_mag(m) >= mbs - dm / 2).sum() >= 200:
+        mc = max(mc, float(mbs))
     b, sb, n, a = sl.b_aki(m, mc, dm)
     bb = sl.b_bootstrap(m, mc, dm, 500, rng)
     bp, sbp, nbp = sl.b_positive(m, dm, 0.2)
@@ -68,16 +90,22 @@ def stats_block(name, m_timeordered, dm=0.1, rng=0):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--catalog", required=True)
-    ap.add_argument("--label", default="IMO SIL")
+    ap.add_argument("--catalog", required=True, nargs="+", help="one or more CSVs (deduplicated by event_id)")
+    ap.add_argument("--label", default="IMO SeisComP")
+    ap.add_argument("--sil", nargs="*", default=[],
+                    help="IMO SIL CSVs: used for the Nov 2023 dike, 2020-2023 and a SIL-vs-SeisComP check")
     a = ap.parse_args()
     cat = load(a.catalog)
+    sil = load(a.sil) if a.sil else cat
+    sil_label = "IMO SIL" if a.sil else a.label
+    if a.sil:
+        compare_systems(sil, cat)
     ev = load_events()
     sv = inbox(cat, SVARTSENGI_BOX).reset_index(drop=True)
 
     # ------------------------------------------------------------------ 1. dike of 10 Nov 2023
     t0, t1 = pd.Timestamp("2023-11-10 12:00"), pd.Timestamp("2023-11-12 00:00")
-    dk = inbox(cat, (-22.65, 63.75, -22.20, 63.95))
+    dk = inbox(sil, (-22.65, 63.75, -22.20, 63.95))
     dk = dk[(dk.time >= t0) & (dk.time < t1)].reset_index(drop=True)
     x, y = to_local_km(dk.longitude, dk.latitude, PARKS_SOURCE["lon"], PARKS_SOURCE["lat"])
     xy = np.c_[x, y]
@@ -138,7 +166,7 @@ def main():
     axs[2].set_ylabel("depth (km)")
     axs[2].set_title("Depth section", fontsize=9)
     axs[2].grid(alpha=.3)
-    fig.suptitle(f"10-11 November 2023 Sundhnúkur dike, {a.label} reviewed catalogue", fontsize=11)
+    fig.suptitle(f"10-11 November 2023 Sundhnúkur dike, {sil_label} reviewed catalogue", fontsize=11)
     fig.tight_layout()
     fig.savefig(IMG / "dike_2023-11-10.png", dpi=130)
 
@@ -155,7 +183,7 @@ def main():
     for i in range(len(ev) - 1 + 1):
         e = ev.iloc[i]
         start = (e.end if e.end > e.start else e.start) + pd.Timedelta(days=2)
-        end = ev.iloc[i + 1].start - pd.Timedelta(days=1) if i + 1 < len(ev) else daily.index.max()
+        end = ev.iloc[i + 1].start - pd.Timedelta(days=1) if i + 1 < len(ev) else min(daily.index.max(), vol.index.max())
         if end <= start:
             continue
         nd = (end - start).days
@@ -208,13 +236,13 @@ def main():
     # ------------------------------------------------------------------ 3. Mc / b-value table
     he = inbox(cat, HENGILL_BOX)
     sets = [
-        ("Dike swarm 10-11 Nov 2023", dk.magnitude.values),
-        ("Svartsengi box, inter-event 2023-12-22..2025-07-15",
+        (f"Dike swarm 10-11 Nov 2023 ({sil_label})", dk.magnitude.values),
+        ("Svartsengi box, inter-event 2023-12-22..2025-07-15 (SeisComP)",
          sv[(sv.time >= "2023-12-22") & (sv.time < "2025-07-16")].magnitude.values),
-        ("Svartsengi box, current cycle 2025-08-06..", sv[sv.time >= "2025-08-06"].magnitude.values),
-        ("Svartsengi box, 2020-01-01..2023-10-24 (pre-dike unrest)",
-         sv[(sv.time >= "2020-01-01") & (sv.time < "2023-10-25")].magnitude.values),
-        ("Hengill box, whole catalogue", he.magnitude.values),
+        ("Svartsengi box, current cycle 2025-08-06.. (SeisComP)", sv[sv.time >= "2025-08-06"].magnitude.values),
+        (f"Svartsengi box, 2020-01..2023-10-24 ({sil_label})",
+         inbox(sil, SVARTSENGI_BOX).query("time >= '2020-01-01' and time < '2023-10-25'").magnitude.values),
+        ("Hengill box 2023-10..2026-11 (SeisComP)", he.magnitude.values),
     ]
     tab = pd.DataFrame([stats_block(n, m) for n, m in sets])
     tab.round(3).to_csv(DATA / "bvalue_table.csv", index=False)
@@ -241,7 +269,8 @@ def main():
 
     # ------------------------------------------------------------------ map
     fig, ax = plt.subplots(figsize=(11, 6))
-    rk = inbox(cat, (-22.9, 63.75, -21.0, 64.2))
+    rk = pd.concat([inbox(sil, (-22.9, 63.75, -21.0, 64.2)).query("time < '2023-10-01'"),
+                    inbox(cat, (-22.9, 63.75, -21.0, 64.2))])
     rk = rk[rk.time >= "2020-01-01"]
     yr = rk.time.dt.year + rk.time.dt.day_of_year / 366
     sc = ax.scatter(rk.longitude, rk.latitude, c=yr, s=0.3 + 0.6 * np.clip(rk.magnitude, 0, 5) ** 2, cmap="turbo",
@@ -251,7 +280,7 @@ def main():
         ax.text(b[0], b[3] + 0.005, nm, fontsize=8)
     ax.set_aspect(1 / np.cos(np.radians(64)))
     plt.colorbar(sc, label="year")
-    ax.set_title(f"Reviewed earthquakes 2020-2026, {a.label} ({len(rk)} events)")
+    ax.set_title(f"Reviewed earthquakes 2020-2026 ({len(rk)} events; SIL to Sep 2023, SeisComP after)")
     fig.tight_layout()
     fig.savefig(IMG / "seismicity_map.png", dpi=130)
 
