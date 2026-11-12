@@ -169,6 +169,8 @@ def main():
         ax.plot(0, 0, "r*", ms=12, label=f"fit, {p['depth_km']:.1f} km")
         ax.plot(px, py, "bx", ms=9, label="Parks et al. 2025")
         ax.set_title(f"{name}: {t0} to {t1}\ndV={p['dv_mm3']:.1f} Mm³, {p['rate_m3s']:.1f} m³/s", fontsize=9)
+        ax.set_xlim(min(x.min(), 0) - 3, max(x.max(), 0) + 4)
+        ax.set_ylim(min(y.min(), 0) - 3, max(y.max(), 0) + 3)
         ax.set_aspect("equal")
         ax.set_xlabel("km E of fitted source")
         ax.grid(alpha=.3)
@@ -296,13 +298,24 @@ def main():
     ax[0].set_title("Volume lost per event")
     ax[0].grid(alpha=.3)
     if len(rec):
-        ax[1].bar(np.arange(len(rec)) - 0.2, rec.prev_loss_this_work, 0.4, label="loss in event that opened the cycle")
-        ax[1].bar(np.arange(len(rec)) + 0.2, rec.recharge_this_work, 0.4, label="recharge until next event")
-        ax[1].set_xticks(np.arange(len(rec)))
-        ax[1].set_xticklabels([f"after {a}\n→ {b}" for a, b in zip(rec.after_event, rec.next_event)], fontsize=7)
-        ax[1].set_ylabel("Mm³ (SENG-only Mogi, this work source)")
-        ax[1].set_title("Recharge per cycle vs. preceding loss (retrospective)")
-        ax[1].legend(fontsize=8)
+        xi = np.arange(len(rec))
+        pub = events.set_index("id").published_loss_mm3
+        ax[1].axhspan(17, 23, color="tab:green", alpha=.15,
+                      label="17-23 Mm³: recharge before the last five events\n(Parks et al., EGU26-6017)")
+        ax[1].bar(xi, rec.recharge_this_work, 0.6, color="tab:orange",
+                  label="recharge from post-event minimum to next event (this work)")
+        ax[1].plot(xi, [pub.get(a, np.nan) for a in rec.after_event], "kD", ms=5,
+                   label="published loss in the event that opened the cycle")
+        last = len(rec) - 1
+        ax[1].annotate(f"ongoing, {rec.days.iloc[-1]} days", (xi[last], rec.recharge_this_work.iloc[-1]),
+                       xytext=(-60, 8), textcoords="offset points", fontsize=8)
+        ax[1].set_xticks(xi)
+        ax[1].set_xticklabels([f"{a}→{b}" if b != "none (ongoing)" else f"{a}→now" for a, b in
+                               zip(rec.after_event, rec.next_event)], fontsize=8)
+        ax[1].set_xlabel("cycle (event id → next event id, see events.csv)")
+        ax[1].set_ylabel("Mm³")
+        ax[1].set_title("Volume-threshold check (retrospective, not a forecast)")
+        ax[1].legend(fontsize=7, loc="upper left")
         ax[1].grid(alpha=.3, axis="y")
     fig.tight_layout()
     fig.savefig(IMG / "volume_loss_and_recharge.png", dpi=130)

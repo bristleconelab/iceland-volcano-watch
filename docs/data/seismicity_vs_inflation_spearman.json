@@ -1,0 +1,8 @@
+{
+ "mc": 0.0,
+ "rate_vs_inflow_rho": 0.7666666666666667,
+ "rate_vs_inflow_p": 0.01594401657897403,
+ "late_rate_vs_dv_rho": -0.48333333333333334,
+ "late_rate_vs_dv_p": 0.18746985521554216,
+ "n_intervals": 9
+}

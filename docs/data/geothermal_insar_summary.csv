@@ -1,0 +1,25 @@
+geom,field,period,n_years,peak_los_median,peak_los_min,peak_los_max,centre_los_median
+asc,Hellisheiði,pre-unrest 2015-2019,4.0,-14.6,-24.4,-10.8,-9.8
+asc,Hellisheiði,all years,9.0,-14.3,-24.8,-10.8,-9.1
+asc,Nesjavellir,pre-unrest 2015-2019,4.0,-18.6,-25.4,-12.6,-4.4
+asc,Nesjavellir,all years,9.0,-16.2,-53.2,1.7,-4.6
+asc,Reykjanes,pre-unrest 2015-2019,4.0,-17.0,-21.6,-11.5,-2.8
+asc,Reykjanes,all years,9.0,-21.6,-110.4,-11.5,-13.8
+asc,Svartsengi,pre-unrest 2015-2019,4.0,-7.6,-22.2,-3.1,-3.8
+asc,Svartsengi,all years,9.0,-3.1,-22.2,167.4,2.3
+desc,Hellisheiði,pre-unrest 2015-2019,3.0,-12.3,-20.5,2.1,0.1
+desc,Hellisheiði,all years,3.0,-12.3,-20.5,2.1,0.1
+desc,Nesjavellir,pre-unrest 2015-2019,3.0,-11.3,-17.9,-5.7,-0.4
+desc,Nesjavellir,all years,3.0,-11.3,-17.9,-5.7,-0.4
+desc,Reykjanes,pre-unrest 2015-2019,3.0,-15.3,-17.5,-14.0,-2.9
+desc,Reykjanes,all years,3.0,-15.3,-17.5,-14.0,-2.9
+desc,Svartsengi,pre-unrest 2015-2019,3.0,-9.3,-23.2,-6.4,-4.1
+desc,Svartsengi,all years,3.0,-9.3,-23.2,-6.4,-4.1
+vertical (asc+desc),Hellisheiði,pre-unrest 2015-2019,,-15.0,,,-6.1
+vertical (asc+desc),Hellisheiði,all years,,-15.8,,,-6.0
+vertical (asc+desc),Nesjavellir,pre-unrest 2015-2019,,-13.6,,,-6.3
+vertical (asc+desc),Nesjavellir,all years,,-11.3,,,-3.5
+vertical (asc+desc),Svartsengi,pre-unrest 2015-2019,,-13.3,,,-8.6
+vertical (asc+desc),Svartsengi,all years,,-9.6,,,-3.0
+vertical (asc+desc),Reykjanes,pre-unrest 2015-2019,,-27.6,,,-6.6
+vertical (asc+desc),Reykjanes,all years,,-29.3,,,-13.3

@@ -1,0 +1,53 @@
+# Prior work and the open gap
+
+Checked 2026-11-12. What is already published or operated for Reykjanes volcanism and geothermal deformation, and
+where an open, reproducible monitor adds something.
+
+![Prior work map](img/prior_work_map.png)
+
+*Footprints are approximate. ▲ = NGL GNSS stations used here, ■ = geothermal power plants, stars = Mogi sources.
+`scripts/prior_work_map.py`.*
+
+## 1. Svartsengi magma domain and the Sundhnúkur dikes
+
+| Work | What it gives | Numbers we compare against |
+|---|---|---|
+| Parks et al. 2025, *EPSL* 658:119324 ([open PDF](https://eprints.whiterose.ac.uk/id/eprint/229677/)) | 37 cGNSS + six SAR missions, joint Mogi / Okada-sill inversions, Nov 2023 to Dec 2024. Table 1 lists every dike: volume lost from the magma domain, dike volume, inflow rate | Mogi source −22.454 E, 63.869 N, 4 km (sill top 4.7 km); inflow ~7-9 m³/s at first, falling to ~2.4-4 m³/s in May 2024 to Jan 2025; per-event losses 2-77.8 Mm³ |
+| Sigmundsson et al. 2024, *Science* | 10 Nov 2023 dike: ~15 km long, peak inflow above 7000 m³/s | dike length, timing |
+| Parks et al., EGU26-6017 ([abstract](https://meetingorganizer.copernicus.org/EGU26/EGU26-6017.html)) | 2025 events | 1 Apr 2025: ~20 km dike, ~100 Mm³ dike, ~35 Mm³ domain loss; 16 Jul 2025: ~12 Mm³ domain loss; **recharge before the last five events 17-23 Mm³** |
+| EGU25-17523, EGU26-12710 | Source depth and volume stability | 3-6 km, inflow 3-8 m³/s; source more stable since Mar 2024 |
+| Flóvenz et al. 2022, *Nature Geoscience* ([InSAR data, Zenodo 6344933](https://zenodo.org/records/6344933)) | 2020-2021 Svartsengi uplift cycles, poroelastic model, magmatic CO₂ | 2020-21 unrest context |
+| Icelandic Met Office (IMO) news ([latest, 9-10 Nov 2026](https://en.vedur.is/about-imo/news/ground-uplift-and-magma-accumulation-continue-beneath-svartsengi)) | Operational model volumes, alert level | 28.3 Mm³ (21 Jul 2026) and 29.1 Mm³ (18 Aug 2026; 95 % range 28.3-29.9) accumulated since 16/17 Jul 2025; ~4-5 cm uplift per 3 months in Sep 2026; alert level 2 |
+| COMET LiCSAR / volcano portal | Automatic Sentinel-1 interferograms, frames 016A_02504_162118 (asc) and 155D_02484_191814 (desc) listed on LiCSAR's volcano frame status page | open input data, no volume series |
+
+## 2. Seismicity
+
+| Work | What it gives |
+|---|---|
+| IMO catalogue, now open through the **Quakes API** (`https://api.vedur.is/quakes/`, OpenAPI spec version 2026-08-06, **CC BY 4.0**). Two systems: `sil` (legacy, reviewed back to 1991) and `seiscomp` (primary since Feb 2026, re-processed back to at least Oct 2023, magnitude type `ML_SIL`) | the catalogue used here |
+| Figlioli et al. 2026, *Bollettino di Geofisica Teorica e Applicata* ([PDF](https://bgo.ogs.it/sites/default/files/pdf/bgo00528_Figlioli.pdf)) | b-value, rate and energy for the 2020-2024 Reykjanes sequence from the IMO catalogue; b-value drops are not uniquely tied to eruptions |
+| Winder et al., EGU26-8103 | relative relocations of the repeated Sundhnúkur dikes |
+| ICEL-NMAR (Mendeley 7zh6xg22cv) | Mw ≥ 4 catalogue 1900-2019 (not used yet) |
+
+## 3. Geothermal-field deformation
+
+| Work | Numbers |
+|---|---|
+| Juncu et al. 2017, *JGR* 122:692 ([open PDF](https://eprints.whiterose.ac.uk/113137/)); EGU2015-13455 | Hengill 2012-2015: up to **24-26 mm/yr LOS** subsidence at Hellisheiði (TerraSAR-X track 41 ascending, after plate-motion correction); GNSS campaign maxima 23 mm/yr (HH47, Hellisheiði) and 18 mm/yr (NE63, Nesjavellir) subsidence; OLKE/HVER ~10 mm/yr wide-area subsidence; reservoirs 0.6-3 km |
+| Juncu et al. 2018, *JVGR* | up to ~2 cm re-injection uplift at Húsmúli since Sep 2011 |
+| Reykjanes field, Sentinel-1 2015-2017 (ÍSOR report for Landsnet, 2021) | ~16 mm/yr LOS subsidence bowl on the well field |
+| Svartsengi, 1975-2015 levelling/model (UNU-GTP thesis) and EGU2009-5142 | 7-14 mm/yr regional subsidence; ~1 cm/yr around the plant, tied to production |
+| EGMS (Copernicus) | Iceland in the 2019-2023 release; download goes through the EGMS Explorer with a free account. Not tried here: LiCSAR was enough for a first look |
+
+## 4. The gap
+
+1. **No open, reproducible volume series.** IMO publishes model volumes as numbers in news items; Parks et al. give
+   a table to Dec 2024. Nobody publishes code that turns open GNSS into a Svartsengi volume series that anyone can
+   rerun and check against those numbers. This project does that with NGL time series (free, no login).
+2. **The 2025-2026 cycle is outside every paper.** The longest inter-event period so far (Aug 2025 to now) is only
+   described in news items.
+3. **Geothermal vs magmatic at Svartsengi.** We found no study that separates the Svartsengi power-plant subsidence
+   from the magmatic signal after 2020 (Flóvenz et al. 2022 discuss fluids, not production). The pre-unrest
+   background can be measured with open data and carried forward as a known term.
+4. **Open catalogue statistics** with the new CC BY Quakes API: rates and b-values per inflation cycle are not
+   published in a reproducible form.
