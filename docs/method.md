@@ -93,7 +93,9 @@ in hourly bins with ≥ 20 events.
 Jul 2025) and current-cycle Mc. Daily counts M ≥ Mc are compared with the Pilot A volume series, and with Spearman
 rank correlations over the inter-event periods.
 
-**Mc and b.** Mc is the most conservative of MAXC+0.2, goodness-of-fit (90/95 %) and b-value stability. b uses
+**Mc and b.** Mc is the larger of MAXC+0.2 and goodness-of-fit (90/95 %). b-value stability (MBS) is also
+computed and used only when at least 200 events lie above it (for the dike swarm MBS gave 3.8 on 66 events, so it
+was not used). b uses
 Aki-Utsu with Shi-Bolt error and 500 bootstraps, plus b-positive (van der Elst 2021, ΔM ≥ 0.2), which is robust to
 short-term incompleteness.
 
