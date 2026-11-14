@@ -1,0 +1,201 @@
+{
+ "provenance_unique_partners": 8685,
+ "provenance": {
+  "zenodo_rows": 8691,
+  "coseismiq_hqdd_rows": 8691,
+  "rows_with_same_lat_lon": 8685,
+  "col4_equals_hqdd_depth": 8653,
+  "col5_equals_hqdd_magnitude": 6634,
+  "col4_equals_hqdd_magnitude": 0,
+  "col5_equals_abs_hqdd_magnitude": 8686,
+  "hqdd_negative_magnitudes": 2054,
+  "zenodo_negative_magnitudes": 0,
+  "time_encoding": "t = (days since 2018-01-01 + 1) / 365, i.e. decimal years from 2018 with 365-day years",
+  "months_off_by_one_day": [
+   "2018-12",
+   "2019-12",
+   "2020-01",
+   "2020-02",
+   "2020-12"
+  ],
+  "rows_off_by_about_one_day": 1517,
+  "time_error_s_other_months_p5_p50_p95": [
+   -15.187264000527811,
+   -0.15463049643926752,
+   14.909361902440562
+  ],
+  "time_resolution_s": {
+   "t<1": 3.1536,
+   "t>=1": 31.535999999999998
+  },
+  "hqdd_time_range": [
+   "2018-12-01 11:06:59.313497",
+   "2021-01-31 18:00:15.838603"
+  ],
+  "hqdd_mag_range": [
+   -0.78,
+   4.56
+  ]
+ },
+ "window": {
+  "start": "2018-12-01",
+  "end_exclusive": "2021-02-01",
+  "days": 793,
+  "box_WSEN": [
+   -21.5,
+   63.98,
+   -21.15,
+   64.15
+  ]
+ },
+ "counts_in_box": {
+  "coseismiq_hqdd": 7969,
+  "imo_seiscomp": 1928,
+  "imo_sil": 2017
+ },
+ "match_seiscomp": {
+  "imo_events": 1928,
+  "matched_to_coseismiq": 1660,
+  "imo_minus_coseismiq_median": -0.5149185000000001,
+  "iqr": [
+   -0.70088475,
+   -0.3468565
+  ],
+  "ols_imo_on_coseismiq": [
+   -0.3730729458601913,
+   0.8261369245440211
+  ],
+  "share_of_imo_ge_mc_found": 0.8843788437884379
+ },
+ "match_sil": {
+  "imo_events": 2017,
+  "matched_to_coseismiq": 1735,
+  "imo_minus_coseismiq_median": -0.1499999999999999,
+  "iqr": [
+   -0.38,
+   0.05999999999999997
+  ],
+  "ols_imo_on_coseismiq": [
+   0.07121333430903984,
+   0.7338667848430207
+  ],
+  "share_of_imo_ge_mc_found": 0.8820722563053851
+ },
+ "stats": [
+  {
+   "set": "COSEISMIQ HQDD (ML)",
+   "n_all": 7969,
+   "mc_maxc02": 0.2,
+   "mc_gft": 0.2,
+   "gft_fit_pct": 97.77453005324168,
+   "mc": 0.2,
+   "n_ge_mc": 4885,
+   "b": 0.8791167695420637,
+   "b_shi_bolt": 0.012219971000045739,
+   "b_ci95": [
+    0.8570248307057554,
+    0.9038810330044121
+   ],
+   "b_positive": 1.0140370435982624,
+   "b_positive_sigma": 0.018738487281532757,
+   "rate_per_day_ge_mc": 6.16015132408575
+  },
+  {
+   "set": "IMO SeisComP (ML_SIL)",
+   "n_all": 1928,
+   "mc_maxc02": 0.4,
+   "mc_gft": 0.2,
+   "gft_fit_pct": 95.4512848778016,
+   "mc": 0.4,
+   "n_ge_mc": 813,
+   "b": 0.8738557450497305,
+   "b_shi_bolt": 0.028951911603470788,
+   "b_ci95": [
+    0.822166396176267,
+    0.9371956157022677
+   ],
+   "b_positive": 0.7941443977107978,
+   "b_positive_sigma": 0.025123627933399863,
+   "rate_per_day_ge_mc": 1.025220680958386
+  },
+  {
+   "set": "IMO SIL",
+   "n_all": 2017,
+   "mc_maxc02": 0.8,
+   "mc_gft": 0.5,
+   "gft_fit_pct": 96.33301547071555,
+   "mc": 0.8,
+   "n_ge_mc": 744,
+   "b": 0.9117243073815441,
+   "b_shi_bolt": 0.03303093079198476,
+   "b_ci95": [
+    0.8485109606134728,
+    0.9794408725737633
+   ],
+   "b_positive": 0.9534851441170471,
+   "b_positive_sigma": 0.03239501343631446,
+   "rate_per_day_ge_mc": 0.9382093316519546
+  }
+ ],
+ "husmuli_sil_yearly_M>=1": {
+  "2006": 7,
+  "2007": 7,
+  "2008": 5,
+  "2009": 97,
+  "2010": 29,
+  "2011": 1041,
+  "2012": 251,
+  "2013": 102,
+  "2014": 368,
+  "2015": 49,
+  "2016": 250,
+  "2017": 32,
+  "2018": 28,
+  "2019": 42,
+  "2020": 109,
+  "2021": 87,
+  "2022": 26,
+  "2023": 122,
+  "2024": 140,
+  "2025": 13
+ },
+ "husmuli_sil_rate_per_year_M>=1": {
+  "2006-01..2010-12 (before injection)": 29.003970427163196,
+  "2011-01..2011-08": 183.37654320987656,
+  "2011-09..2011-12": 2751.350409836066,
+  "2012-06..2015-12 (HUSM +2.1 mm/yr)": 157.93086325439265,
+  "2017-03..2019-12 (HUSM -5.1 mm/yr)": 35.25579150579151,
+  "2020-01..2025-12 (HUSM -9.9 mm/yr)": 82.81443886861314
+ },
+ "husmuli_sil_max_mag_by_period": {
+  "2006-01..2010-12 (before injection)": 2.88,
+  "2011-01..2011-08": 2.56,
+  "2011-09..2011-12": 4.04,
+  "2012-06..2015-12 (HUSM +2.1 mm/yr)": 2.71,
+  "2017-03..2019-12 (HUSM -5.1 mm/yr)": 2.34,
+  "2020-01..2025-12 (HUSM -9.9 mm/yr)": 3.65
+ },
+ "coseismiq_husmuli": {
+  "events": 3762,
+  "share_of_box": 0.4720793073158489,
+  "median_depth_km": 1.9776500000000001,
+  "median_depth_rest_of_box_km": 3.4758
+ },
+ "husm_vertical_rel_REYK": [
+  {
+   "period": "2012-06..2015-12",
+   "vu_rel_REYK": 2.13,
+   "n": 1073
+  },
+  {
+   "period": "2017-03..2019-12",
+   "vu_rel_REYK": -5.06,
+   "n": 704
+  },
+  {
+   "period": "2020-01..2026-12",
+   "vu_rel_REYK": -9.87,
+   "n": 1171
+  }
+ ]
+}

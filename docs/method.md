@@ -12,6 +12,8 @@ data (CSV, GeoTIFF, text). Every number in the README comes from a CSV in `docs/
 | `scripts/reykjanes_seismicity.py` | B | IMO SeisComP + SIL catalogues | dike migration, rates, Mc and b-values |
 | `scripts/geothermal_deformation.py` | C | LiCSAR annual pairs, NGL HUSM/REYK | field subsidence rates, maps |
 | `scripts/prior_work_map.py` | | LiCSAR DEM crop | prior-work map |
+| `scripts/fetch_hengill_catalogs.py` | D | Zenodo 16311162, COSEISMIQ figshare | `data/raw/hengill/` |
+| `scripts/hengill_catalog.py` | D | COSEISMIQ HQDD, IMO SIL + SeisComP (Hengill box), NGL HUSM/REYK | `docs/data/hengill_catalog.json`, two figures |
 | `scripts/seislib.py` | B | copied unchanged from the sibling `seismo-lab` project | |
 
 ```bash
@@ -29,6 +31,11 @@ for f in 016A_02504_162118 155D_02484_191814; do .venv/bin/python -I scripts/lic
     --sil data/raw/imo/sil_reykjanes_hengill_2020_2026.csv
 .venv/bin/python -I scripts/geothermal_deformation.py
 .venv/bin/python -I scripts/prior_work_map.py
+# Pilot D (Hengill catalogue)
+.venv/bin/python -I scripts/fetch_hengill_catalogs.py
+for s in sil seiscomp; do .venv/bin/python -I scripts/fetch_imo_quakes.py --system $s --start 1991-01-01 --end 2026-11-14 \
+    --bbox -21.75 63.90 -20.85 64.20 --window-days 92 --out data/raw/imo/${s}_hengill_1991_2026.csv; done
+.venv/bin/python -I scripts/hengill_catalog.py
 ```
 
 ## Pilot A: Svartsengi magma domain from GNSS
@@ -79,8 +86,8 @@ before the next event.
 
 ## Pilot B: seismicity
 
-**Catalogues.** The IMO Quakes API serves two systems. **SeisComP** (primary since Feb 2026, reviewed events
-back to Oct 2023, magnitude type `ML_SIL`) is the only continuous catalogue through the current cycle. **SIL**
+**Catalogues.** The IMO Quakes API serves two systems. **SeisComP** (primary since Feb 2026, magnitude type `ML_SIL`; we fetched
+it from Oct 2023 for Reykjanes, but reviewed events exist further back: from 2015-06-20 in the Hengill box) is the only continuous catalogue through the current cycle. **SIL**
 (legacy) has reviewed events until early Feb 2026 and is much denser during the Nov 2023 dike. We use SeisComP
 for everything from Oct 2023 on (rates, b-values per cycle), and SIL for the 10 Nov 2023 dike and for 2020-2023.
 Only reviewed (`manual`) events of type earthquake (or no type) are used.
@@ -130,3 +137,42 @@ equipment change from NGL's steps file (the 2016-07-26 change has no data after 
   2020 (magmatic) or at Hengill if the bowl is wider than 4 km.
 - Field centres are approximate plant/well-field locations, not production-weighted.
 - Svartsengi geothermal vs magmatic: see README §C.
+
+## Pilot D: the Zenodo Hengill catalogue (added 2026-11-14)
+
+**What the file is.** Zenodo record 10.5281/zenodo.16311162 ("Hengill seismic catalog", University of Campania,
+2025-07-22, CC BY 4.0) holds one file, `hen_conv.dat`: 8,691 rows, five numeric columns, no header. The record
+text says "1 col) time (sec) 2 col) latitude 3 col) longitude 4 col) event magnitude 5 col) depth" and nothing
+about method or magnitude type. Every row matches an event of the COSEISMIQ high-quality double-difference
+catalogue, `catalogue_HQDD.csv` (Grigoli et al. 2022, *Scientific Data* 9:220; figshare, CC0), which also has
+8,691 rows:
+- latitude and longitude agree within 5×10⁻⁶ degrees for 8,685 rows (the Zenodo values are single precision);
+- column 4 is the HQDD **depth** (8,653 rows within 1 m) and column 5 is the HQDD **magnitude**, so the record text
+  swaps the two;
+- column 5 equals the HQDD magnitude's **absolute value** for 8,686 rows. HQDD has 2,054 negative magnitudes; the
+  Zenodo file has none. The minus sign was lost;
+- column 1 is not seconds. It is (days since 2018-01-01 + 1) / 365, printed with 7 significant digits. That gives a
+  resolution of 3 s before 2019 and 32 s after, and 1,517 rows (Dec 2018, Dec 2019-Feb 2020, Dec 2020) sit one day
+  off the HQDD origin time.
+
+Magnitudes are local magnitudes, ML, from Wood-Anderson-simulated amplitudes (Grigoli et al. 2022). They are not
+calibrated to IMO's scale. Because the Zenodo file lost the signs, rounded the times and has a one-day error in
+five months, **all statistics below use the HQDD file**, which holds the same events.
+
+**Comparison with IMO.** Window 2018-12-01 to 2021-01-31 (793 days), Pilot B Hengill box (21.50-21.15 W,
+63.98-64.15 N). Reviewed IMO events from both systems: SeisComP (`ML_SIL`) and SIL. Events are matched within 3 s
+and 3 km, one IMO event per COSEISMIQ event. Mc is the larger of MAXC+0.2 and GFT. b is Aki-Utsu with a 1,000-sample
+bootstrap 95 % interval, plus b-positive.
+
+**Húsmúli.** A 3 km circle around 64.055 N, 21.395 W, the centre of the induced cluster. The long series uses
+SIL at M ≥ 1.0, which is above every yearly SIL MAXC in 2006-2025 (0.1-0.6). Periods are chosen to match the
+HUSM GNSS rates of Pilot C. Re-injection start (Sep 2011) is from Juncu et al. 2018 (prior-work §3); we have no
+injection-rate data.
+
+**Limitations (D).**
+- COSEISMIQ covers only Dec 2018 to Jan 2021. It overlaps the 2017-19 and 2020-26 HUSM periods but not the 2011
+  start of injection or the 2012-15 uplift.
+- Injection and production volumes are not open, so seismicity is compared with GNSS only, not with the cause.
+- OLS slopes between magnitude scales are biased low by scatter in the x magnitude; we report medians of the
+  differences and do not convert b between scales.
+- Magnitudes stay in their own scales; Mc and b are not converted.

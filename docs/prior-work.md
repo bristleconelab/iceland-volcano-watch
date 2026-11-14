@@ -24,10 +24,12 @@ where an open, reproducible monitor adds something.
 
 | Work | What it gives |
 |---|---|
-| IMO catalogue, now open through the **Quakes API** (`https://api.vedur.is/quakes/`, OpenAPI spec version 2026-08-06, **CC BY 4.0**). Two systems: `sil` (legacy, reviewed back to 1991) and `seiscomp` (primary since Feb 2026, re-processed back to at least Oct 2023, magnitude type `ML_SIL`) | the catalogue used here |
+| IMO catalogue, now open through the **Quakes API** (`https://api.vedur.is/quakes/`, OpenAPI spec version 2026-08-06, **CC BY 4.0**). Two systems: `sil` (legacy, reviewed back to 1991) and `seiscomp` (primary since Feb 2026, reviewed events back to 2015-06-20 in the Hengill box, magnitude type `ML_SIL`) | the catalogue used here |
 | Figlioli et al. 2026, *Bollettino di Geofisica Teorica e Applicata* ([PDF](https://bgo.ogs.it/sites/default/files/pdf/bgo00528_Figlioli.pdf)) | b-value, rate and energy for the 2020-2024 Reykjanes sequence from the IMO catalogue; b-value drops are not uniquely tied to eruptions |
 | Winder et al., EGU26-8103 | relative relocations of the repeated Sundhnúkur dikes |
 | ICEL-NMAR (Mendeley 7zh6xg22cv) | Mw ≥ 4 catalogue 1900-2019 (not used yet) |
+| Hengill seismic catalog, Zenodo 10.5281/zenodo.16311162 (University of Campania, 2025, CC BY 4.0) | 8,691 events, no method or magnitude type stated. It is a lossy copy of COSEISMIQ HQDD (signs of 2,054 negative magnitudes lost, depth/magnitude columns swapped in the description, times rounded to 3-32 s and 1,517 rows one day off); see method, Pilot D |
+| COSEISMIQ catalogues, Grigoli et al. 2022, *Scientific Data* 9:220, doi:10.1038/s41597-022-01339-w (figshare 10.6084/m9.figshare.c.5725592, CC0) | Hengill, Dec 2018-Jan 2021, dense temporary network; ML; HQ and HQDD ~8,500 events; Mc 0.5-1.0 stated |
 
 ## 3. Geothermal-field deformation
 

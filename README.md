@@ -5,11 +5,11 @@ Nevada Geodetic Laboratory (NGL) GNSS, the Icelandic Met Office (IMO) Quakes API
 Sentinel-1 interferograms. It measures the Svartsengi magma domain (inflation, Mogi source, volume per cycle), the
 seismicity of the Sundhnúkur dikes, and subsidence of the Hengill and Svartsengi geothermal fields.
 
-> **Status (2026-11-12): three pilots, all run end to end.** This repository does measurement and retrospective
+> **Status (2026-11-14): four pilots, all run end to end.** This repository does measurement and retrospective
 > statistics only. It makes **no eruption forecasts**; for hazard information see the
 > [Icelandic Met Office](https://en.vedur.is/).
 > Method and limitations: [docs/method.md](docs/method.md). Prior work and the gap:
-> [docs/prior-work.md](docs/prior-work.md). Pilot report: [reports/2026-11-12-pilot.md](reports/2026-11-12-pilot.md).
+> [docs/prior-work.md](docs/prior-work.md). Pilot report: [reports/2026-11-12-pilot.md](reports/2026-11-12-pilot.md); Hengill catalogue report: [reports/2026-11-14-hengill-catalog.md](reports/2026-11-14-hengill-catalog.md).
 
 ![SENG and volume](docs/img/seng_volume_timeseries.png)
 
@@ -71,12 +71,65 @@ shutdowns) is unknown, so the bound assumes steady production.
 
 ![geothermal maps](docs/img/geothermal_velocity_maps.png)
 
+### D. Hengill: the Zenodo "Hengill seismic catalog" against IMO, and Húsmúli re-injection (added 2026-11-14)
+
+**What the catalogue is.** Zenodo 10.5281/zenodo.16311162 (University of Campania, 2025, CC BY 4.0) gives no method
+and no magnitude type. All 8,691 rows are the events of the COSEISMIQ high-quality double-difference catalogue
+(Grigoli et al. 2022; figshare, CC0), whose magnitudes are local ML from a dense temporary network, Dec 2018 to
+Jan 2021. The Zenodo copy has four defects: the record swaps the magnitude and depth columns; the 2,054 negative
+magnitudes have lost their minus sign; "time (sec)" is really (days since 2018-01-01 + 1)/365 with 3-32 s
+resolution; and 1,517 rows are one day off. We therefore use the original HQDD file for the numbers below.
+
+**(a) Against IMO, Hengill box, 2018-12-01 to 2021-01-31 (793 days).**
+
+| | COSEISMIQ HQDD (ML) | IMO SeisComP (`ML_SIL`) | IMO SIL |
+|---|---|---|---|
+| Events | 7,969 | 1,928 | 2,017 |
+| Mc (max of MAXC+0.2, GFT) | 0.2 | 0.4 | 0.8 |
+| b (Aki-Utsu, 95 % bootstrap) | 0.88 (0.86-0.90) | 0.87 (0.82-0.94) | 0.91 (0.85-0.98) |
+| b-positive | 1.01 ± 0.02 | 0.79 ± 0.03 | 0.95 ± 0.03 |
+| Rate above own Mc | 6.2 per day | 1.0 per day | 0.94 per day |
+| IMO magnitude − COSEISMIQ, matched events (median, IQR) | | −0.51 (−0.70 to −0.35), n = 1,660 | −0.15 (−0.38 to +0.06), n = 1,735 |
+
+- COSEISMIQ has about 4 times as many events. Its Mc of 0.2 corresponds to about −0.3 in SeisComP units and 0.05 in
+  SIL units (median offsets), so it is complete about 0.7 magnitude units lower than either IMO system.
+- 88 % of IMO events above IMO's own Mc are in COSEISMIQ (both systems).
+- The three Aki-Utsu b-values agree within their intervals; b-positive differs more between catalogues (0.79-1.01).
+- The SeisComP-SIL gap here, about 0.36 by way of COSEISMIQ, is smaller than the 0.62 measured directly on
+  Reykjanes events (B). The two numbers come from different regions and periods and were not reconciled.
+
+**(b) Húsmúli re-injection, 3 km circle.** 47 % of COSEISMIQ's events in the box lie in this circle, at a median
+depth of 2.0 km (3.5 km for the rest of the box). The long series uses IMO SIL at M ≥ 1.0:
+
+| Period | SIL events per year, M ≥ 1.0 | Largest M | HUSM vertical rel. REYK |
+|---|---|---|---|
+| 2006-2010, before injection | 29 | 2.88 | (no data) |
+| Jan-Aug 2011 (105 of these events in February 2011) | 183 | 2.56 | (no data) |
+| Sep-Dec 2011, injection starts | 2,751 | 4.04 | (no data) |
+| Jun 2012-2015 | 158 | 2.71 | +2.1 mm/yr |
+| Mar 2017-2019 | 35 | 2.34 | −5.1 mm/yr |
+| 2020-2025 | 83 | 3.65 | −9.9 mm/yr |
+
+**(c) What it explains.**
+- **Hellisheiði InSAR mismatch:** it does not explain it. A seismicity catalogue does not measure subsidence, and
+  COSEISMIQ (2018-2021) does not cover either the TerraSAR-X years (2009/2012-2015) or most of our LiCSAR window
+  (2015-2019).
+- **HUSM sign change:** it does not explain it either. The Húsmúli rate fell 4.5 times from 2012-15 to 2017-19 as
+  HUSM went from uplift to subsidence. It then rose 2.35 times in 2020-25 while the subsidence sped up. So the rate
+  does not follow the GNSS in one direction. Injection volumes are not open, so the cause stays untested.
+
+![Hengill catalogue](docs/img/hengill_catalog_comparison.png)
+![Húsmúli](docs/img/husmuli_seismicity_gnss.png)
+
 ## Data used
 
 - NGL IGS20 daily `.tenv3`: SENG, AUSV, GEVK, VOGC, NYLA, HUSM, REYK (+ VOGS, SEL3, HVER, OLKE looked at). 16 MB with the station list and steps file.
 - IMO Quakes API (21 MB): SIL reviewed 2020-01-01 to 2026-06-01 (143,538 earthquakes); SeisComP 2023-10-01 to
   2026-11-11 (58,881 reviewed earthquakes). Box 63.70-64.20 N, 22.9-21.0 W.
 - LiCSAR: 27 ascending + 9 descending summer annual pairs, cropped to 63.80-64.16 N, 22.75-21.10 W (71 MB).
+- Hengill (Pilot D): Zenodo `hen_conv.dat` and COSEISMIQ `catalogue_HQDD.csv`/`catalogue_HQ.csv` (2.6 MB); IMO SIL
+  1991-2026 (174,902 events) and SeisComP 2015-06-20 to 2026-11-13 (28,016 reviewed) in 63.90-64.20 N,
+  21.75-20.85 W.
 - Papers for comparison: Parks et al. 2025 (EPSL), Juncu et al. 2017 (JGR), both from open repositories.
 
 ## Next steps
@@ -96,6 +149,9 @@ shutdowns) is unknown, so the bound assumes steady production.
 - Sigmundsson, F. et al. 2024. Fracturing and tectonic stress drive ultrarapid magma flow into dikes. *Science*.
 - Juncu, D. et al. 2017. Anthropogenic and natural ground deformation in the Hengill geothermal area, Iceland.
   *JGR Solid Earth* 122: 692-709. Juncu, D. et al. 2018, *JVGR*.
+- Grigoli, F. et al. 2022. Monitoring microseismicity of the Hengill Geothermal Field in Iceland. *Scientific Data*
+  9: 220. COSEISMIQ catalogues on figshare (CC0). "Hengill seismic catalog", University of Campania 2025, Zenodo
+  10.5281/zenodo.16311162 (CC BY 4.0).
 - Figlioli et al. 2026, *Bollettino di Geofisica Teorica ed Applicata* (Reykjanes b-value, 2020-2024).
 - Icelandic Met Office news, 2025-2026 (en.vedur.is); IMO Quakes API (CC BY 4.0).
 - Blewitt, G., Hammond, W. C. & Kreemer, C. 2018. Harnessing the GPS data explosion for interdisciplinary science.
