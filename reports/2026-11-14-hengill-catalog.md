@@ -1,5 +1,9 @@
 # Report, 2026-11-14: the Zenodo "Hengill seismic catalog"
 
+> **Note (2026-11-16):** some numbers and verdicts in this report were superseded (coordinate fix, loss method,
+> event selection, Hellisheiði definitions, citations). See [docs/corrections.md](../docs/corrections.md); the
+> current values are in the README.
+
 Scope: check the catalogue (Zenodo 10.5281/zenodo.16311162), compare it with IMO, relate Húsmúli seismicity to
 re-injection and the HUSM GNSS series, and see whether it helps with the Hellisheiði InSAR mismatch.
 Script `scripts/hengill_catalog.py`; numbers in `docs/data/hengill_catalog.json`; method in docs/method.md, Pilot D.

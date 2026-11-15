@@ -14,7 +14,11 @@ data (CSV, GeoTIFF, text). Every number in the README comes from a CSV in `docs/
 | `scripts/prior_work_map.py` | | LiCSAR DEM crop | prior-work map |
 | `scripts/fetch_hengill_catalogs.py` | D | Zenodo 16311162, COSEISMIQ figshare | `data/raw/hengill/` |
 | `scripts/hengill_catalog.py` | D | COSEISMIQ HQDD, IMO SIL + SeisComP (Hengill box), NGL HUSM/REYK | `docs/data/hengill_catalog.json`, two figures |
-| `scripts/seislib.py` | B | copied unchanged from the sibling `seismo-lab` project | |
+| `scripts/hellisheidi_matched.py` | C | LiCSAR annual pairs, closure-test pairs, NGL HUSM/REYK | `docs/data/hellisheidi_matched*.json/csv`, `hellisheidi_gnss_check.csv`, figure |
+| `scripts/digitize_published_figures.py` | C | Juncu et al. 2017 Fig. 7, Ducrocq et al. 2021 Fig. 5 (PDFs in `data/raw/papers/`) | `docs/data/published_figures_digitized.json` |
+| `scripts/seislib.py` | B | vendored unchanged from the sibling `seismo-lab` project (commit 5229c22; sha256 checked by a test) | |
+| `config/svartsengi.json` | A | fixed inputs with sources: intervals, GNSS errors, Parks source, IMO values, event-selection rule | |
+| `tests/test_core.py` | all | synthetic cases only | `python -I -m unittest discover -s tests` |
 
 ```bash
 uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
@@ -36,7 +40,19 @@ for f in 016A_02504_162118 155D_02484_191814; do .venv/bin/python -I scripts/lic
 for s in sil seiscomp; do .venv/bin/python -I scripts/fetch_imo_quakes.py --system $s --start 1991-01-01 --end 2026-11-14 \
     --bbox -21.75 63.90 -20.85 64.20 --window-days 92 --out data/raw/imo/${s}_hengill_1991_2026.csv; done
 .venv/bin/python -I scripts/hengill_catalog.py
+# Hellisheiði matched definitions (2026-11-16): closure-test pairs (Hengill crop, 14 MB) and the two papers
+#   pairs: see CLOSURE_SETS in scripts/hellisheidi_matched.py; fetched with licsar_annual.fetch() into
+#   data/raw/licsar_closure/016A_02504_162118/{los_mm,cc}/ with bbox -21.80 63.90 -21.10 64.16
+#   papers: data/raw/papers/juncu2017/juncu2017.pdf (eprints.whiterose.ac.uk/113137),
+#           data/raw/papers/ducrocq2021/ducrocq2021.pdf (frontiersin.org, doi:10.3389/feart.2021.725109)
+.venv/bin/python -I scripts/hellisheidi_matched.py
+.venv/bin/python -I scripts/digitize_published_figures.py      # needs poppler's pdftoppm
+.venv/bin/python -I -m unittest discover -s tests -v
 ```
+
+**Local coordinates.** `ivwlib.to_local_km` returns geodesic azimuthal-equidistant coordinates on WGS84
+(`pyproj.Geod`). Before 2026-11-16 it used an equirectangular formula with the equatorial degree of latitude
+(0.8 % short in north distances at 64° N); see [corrections.md](corrections.md).
 
 ## Pilot A: Svartsengi magma domain from GNSS
 
@@ -54,30 +70,61 @@ because dikes move SENG by decimetres to metres. Gross outliers are > 5 robust �
 geothermal-field subsidence, regional subsidence and GIA together. It is removed from SENG's vertical as a
 constant term. Horizontal plate motion is absorbed by a common E/N translation in each fit.
 
-**Mogi fits.** For four inflation-only intervals (no dike between the end dates), 5-day mean displacements are fitted
-with a Mogi point source in an elastic half-space (ν = 0.25). The source position (0.004° × 0.002° grid) and depth
-(1.5-8 km, 0.25 km step) are found by grid search; ΔV and the translation are solved by linear least squares.
-Errors are 3 mm horizontal and 8 mm vertical, plus 5 % of the signal as model error. The depth range is where
-χ² ≤ χ²_min + scale (scale = χ²_min/dof when > 1). The jackknife drops one station at a time.
+**Mogi fits.** For four inflation-only intervals (no dike between the end dates; `config/svartsengi.json`), 5-day
+mean displacements are fitted with a Mogi point source in an elastic half-space (ν = 0.25).
+- Grid search over source position (0.004° × 0.002°) and depth (1.5-8 km, 0.25 km step). ΔV and a common E/N
+  translation are solved by weighted linear least squares.
+- Errors: 3 mm horizontal and 8 mm vertical, plus 5 % of the signal as model error.
+- **χ²/dof is 9.3, 24.5, 19.0 and 30.3**: one point source does not fit any interval to within these errors.
+- The depth interval is where the χ² profile is within χ²/dof of its minimum, i.e. errors rescaled by sqrt(χ²/dof).
+  Rescaling assumes the model is right; the misfit here is systematic, so the intervals are indicative, not formal.
+  Unscaled intervals are kept in `mogi_fits.csv`.
+- The jackknife drops one station at a time.
+- `mogi_correlation.json` gives the linearised parameter correlations. Depth-ΔV is 0.87-0.95 and east
+  position-east translation is 0.45-0.63.
+- A second fit holds the horizontal position at Parks et al.'s (`*_fixed_parks_xy` in `mogi_fits.csv`).
+- The Parks et al. source is fitted with the same weights. The unweighted value used before 2026-11-16 is kept for
+  comparison.
 
 ![Mogi fits](img/mogi_fits.png)
 
-**Volume series.** With the source fixed (median of the four fits: −22.446 E, 63.872 N, 3.75 km), the SENG
-vertical becomes a volume series: ΔV = u_z / G_z, with G_z = 14.4 mm per Mm³. With Parks et al.'s source
-(−22.454 E, 63.869 N, 4 km), G_z = 11.4 mm per Mm³, so volumes are 26 % larger. Per event, the volume lost runs
-from the day before onset to the minimum within 7 days. Per cycle, the recharge runs from that minimum to the day
-before the next event.
+**Volume series.** With the source fixed (median of the four fits: −22.446 E, 63.872 N, 3.875 km), the SENG vertical
+becomes a volume series: ΔV = u_z / G_z, with G_z = 13.58 mm per Mm³. With Parks et al.'s source (−22.454 E,
+63.869 N, 4 km), G_z = 11.38 mm per Mm³, so volumes are 19 % larger. Over the depths of the four fits (3.50-4.75 km)
+G_z runs from 16.1 to 9.5 mm per Mm³ (`volume_sensitivity_source.csv`).
+
+ΔV is the **volume change of the Mogi cavity**. With compressible magma, the volume that flows in is larger than
+the cavity change (Rivalta & Segall 2008, GRL 35, doi:10.1029/2007GL032521). Volumes and inflow rates here are
+therefore lower bounds on magma inflow, in the same convention as Parks et al. 2025 and IMO's model volumes.
+
+**Loss and recharge.**
+- Per event, the volume lost is the median of the 5 days before onset minus the lowest 5-day running median in the
+  7 days after onset.
+- Per cycle, the recharge runs from that post-event level to the 5-day median before the next onset.
+- Before 2026-11-16 the loss used single days (last value before onset, raw minimum after it). That overstates the
+  loss on a noisy series; the old values are kept as `loss_this_work_old_method`.
+
+**Event-selection rule.** Fixed in `config/svartsengi.json` before it was applied, and using seismicity only. An
+event's loss is used if the 5th percentile of the distance from SENG to the reviewed IMO earthquakes of the first
+24 h is ≥ 3 km. No event passes (d5 = 1.65-2.36 km); see `event_selection_rule.json`.
 
 ![SENG volume series](img/seng_volume_timeseries.png)
 
 **Limitations (A).**
+- The background (SENG −16.4 mm/yr, 2015.5-2019.9) is held constant to 2026. Other pre-unrest windows give −15.8 to
+  −16.8 mm/yr and move the cycle volume by ≤ 0.05 Mm³. Removing the geothermal term entirely moves it by −0.85 Mm³
+  and the last 3-month inflow from 0.47 to 0.45 m³/s (`volume_sensitivity_background.csv`).
+- Volumes are Mogi cavity changes, which are lower bounds on magma inflow when magma is compressible.
+- 4-5 stations constrain 6 parameters, on both sides of the plate boundary. The common translation trades off with
+  source position (correlation up to 0.63), and depth with ΔV (up to 0.95). Scaled 1σ is 0.7-1.0 km in depth and
+  35-42 % in ΔV.
 - One station (SENG) drives the volume series. Where a dike passes close to SENG, the dike's own deformation
   contaminates its vertical. Events 1 (10 Nov 2023), 2, 3, 5 and 10 (1 Apr 2025, ~20 km dike) are badly
   underestimated or have the wrong sign. The series is valid for inflation, and for losses at events whose
   dike stayed away from SENG (4, 6, 7, 8, 9, 11).
-- Volumes depend on the source geometry: ±26 % between our source and Parks et al.'s. SENG sits 1.8 km from the
-  source, so G_z is very sensitive to depth.
-- I4 (Aug 2025 to Oct 2026, 429 days) fits badly (RMS 49 mm). One point source cannot match SENG's +394 mm uplift
+- Volumes depend on the source geometry: +19 % with Parks et al.'s source, and −16 % to +43 % over our own depth
+  range (3.50-4.75 km). SENG sits 1.3 km from our source and 1.8 km from Parks et al.'s, horizontally, so G_z is very sensitive to depth.
+- I4 (Aug 2025 to Oct 2026, 429 days) fits worst (RMS 49 mm, χ²/dof 30). One point source cannot match SENG's +394 mm uplift
   together with the Grindavík stations. Possible causes: a change in source shape, post-dike motion inside the
   Grindavík graben, or a SENG-specific signal. Not resolved.
 - Depth is poorly constrained by 4-5 stations (jackknife 2.5-5.0 km). The InSAR in Pilot C was not used for
@@ -121,7 +168,9 @@ gradient, which is clearly visible: ascending and descending maps have opposite-
 Ascending and descending pre-unrest median maps are combined into vertical and east (north ignored).
 
 **LiCSAR availability.** 6 ascending pairs (2020-2022 primaries) and 9 descending pairs (2019-2021 primaries) are
-listed in the LiCSAR index but return HTTP 403/404. The descending vertical decomposition is therefore only
+listed in the LiCSAR index but return HTTP 403/404. Of the 27 + 9 pairs downloaded, 4 ascending and 3 descending
+files are empty (unwrapped phase all zero, or coherence missing), so 23 + 6 carry data. Short (6-12 day) pairs of
+2019 and 2023 also return 403; those of 2015 and 2025 are served. The descending vertical decomposition is therefore only
 possible for primaries 2015, 2017 and 2018 (pre-unrest).
 
 **GNSS.** HUSM (Húsmúli re-injection area) relative to REYK, with an annual term and an offset at the 2017-02-09
@@ -129,6 +178,27 @@ equipment change from NGL's steps file (the 2016-07-26 change has no data after 
 
 ![Geothermal maps](img/geothermal_velocity_maps.png)
 ![Yearly rates](img/geothermal_yearly_rates.png)
+
+**Hellisheiði with matched definitions** (`hellisheidi_matched.py`, `digitize_published_figures.py`).
+- Each LiCSAR annual pair is evaluated on its own and kept if ≥ 30 % of the pixels within 1.5 km of the bowl are
+  coherent.
+- Definitions:
+  - D0: pilot C (centre −21.40/64.04, 5th percentile within 1.5 km minus 4-7 km ring);
+  - D1: centre at Juncu et al.'s source (21.371 W, 64.033 N);
+  - D2: reference = median within 2 km of the GFEL hexagon of Juncu et al. Fig. 7 (63.963 N, 21.530 W);
+  - D3: a plane fitted outside the deforming areas removed (far field = 0);
+  - D3min: the minimum instead of the 5th percentile.
+- Asc+desc pre-unrest median maps are decomposed into east and up and re-projected onto the TerraSAR-X LOS
+  [−0.50, −0.12, 0.86] (north ignored).
+- Closure test: a chain of 6/12-day pairs summed minus the direct long pair over the same dates (2015, 2025).
+- GNSS check: HUSM−REYK projected onto each pair's LOS for the exact dates (2017-02-09 HUSM equipment offset
+  removed).
+- Published maps (Juncu et al. 2017 Fig. 7; Ducrocq et al. 2021 Fig. 5):
+  - rendered at 300 dpi;
+  - inverted by hue against their colour bars (self-check ≤ 0.3 mm/yr between −19 and +23 on the Ducrocq bar,
+    ≤ 1.0 on the Juncu bar; saturated below about −19 and −24);
+  - georeferenced by an affine fit to the HUSM, OLKE and HVER markers. The two baselines agree on the scale within
+    0.5 %: 18.1 and 13.0 px/km.
 
 **Limitations (C).**
 - LiCSAR has ~100 m pixels and contains unwrapping errors (visible as patches in the descending map). The yearly
@@ -176,3 +246,6 @@ injection-rate data.
 - OLS slopes between magnitude scales are biased low by scatter in the x magnitude; we report medians of the
   differences and do not convert b between scales.
 - Magnitudes stay in their own scales; Mc and b are not converted.
+- Effect of the damaged copy: all 8,691 rows, three inputs (HQDD; Zenodo column 5 = |ML|; Zenodo column 4 as the
+  record text says). Zenodo rows are ordered by the decoded Zenodo time for b-positive (`damaged_copy_effect` in
+  `hengill_catalog.json`).
