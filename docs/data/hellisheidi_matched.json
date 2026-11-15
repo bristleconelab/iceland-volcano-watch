@@ -1,0 +1,233 @@
+{
+ "published": {
+  "juncu2017_tsx_los_peak": -26.0,
+  "egu2015_tsx_los_peak": -24.0,
+  "juncu2017_gnss_hh47_up": -23.0
+ },
+ "centre_pilot_c": [
+  -21.4,
+  64.04
+ ],
+ "centre_juncu": [
+  -21.371,
+  64.033
+ ],
+ "ref_gfel": [
+  -21.53,
+  63.963
+ ],
+ "gfel_ref_radius_km": 2.0,
+ "min_bowl_coverage": 0.3,
+ "los_unit_asc_ENU": [
+  -0.604,
+  -0.124,
+  0.787
+ ],
+ "los_unit_desc_ENU": [
+  0.553,
+  -0.124,
+  0.824
+ ],
+ "los_pair_medians": {
+  "asc": {
+   "pre_2015_2019": {
+    "D0": -13.9,
+    "D1": -13.1,
+    "D2": -16.8,
+    "D3": -13.0,
+    "D3gfel": -14.9,
+    "D3min": -13.9,
+    "ring_minus_gfel": -3.8,
+    "n_D0": 7,
+    "n_D1": 7,
+    "n_D2": 7,
+    "n_D3": 7,
+    "n_D3gfel": 7,
+    "n_D3min": 7,
+    "n_pairs_listed": 12
+   },
+   "all_years": {
+    "D0": -13.0,
+    "D1": -12.6,
+    "D2": -14.7,
+    "D3": -14.4,
+    "D3gfel": -15.4,
+    "D3min": -15.2,
+    "ring_minus_gfel": -0.2,
+    "n_D0": 20,
+    "n_D1": 20,
+    "n_D2": 20,
+    "n_D3": 20,
+    "n_D3gfel": 20,
+    "n_D3min": 20,
+    "n_pairs_listed": 27
+   }
+  },
+  "desc": {
+   "pre_2015_2019": {
+    "D0": -7.1,
+    "D1": -10.8,
+    "D2": -11.8,
+    "D3": -11.1,
+    "D3gfel": -11.2,
+    "D3min": -12.1,
+    "ring_minus_gfel": -1.6,
+    "n_D0": 6,
+    "n_D1": 6,
+    "n_D2": 6,
+    "n_D3": 6,
+    "n_D3gfel": 6,
+    "n_D3min": 6,
+    "n_pairs_listed": 9
+   },
+   "all_years": {
+    "D0": -7.1,
+    "D1": -10.8,
+    "D2": -11.8,
+    "D3": -11.1,
+    "D3gfel": -11.2,
+    "D3min": -12.1,
+    "ring_minus_gfel": -1.6,
+    "n_D0": 6,
+    "n_D1": 6,
+    "n_D2": 6,
+    "n_D3": 6,
+    "n_D3gfel": 6,
+    "n_D3min": 6,
+    "n_pairs_listed": 9
+   }
+  }
+ },
+ "asc_time_change": {
+  "D0": {
+   "slope_mm_yr_per_yr": 0.01,
+   "n_years": 9,
+   "median_2015_2019": -14.1,
+   "median_2022_2026": -12.5
+  },
+  "D2": {
+   "slope_mm_yr_per_yr": 0.41,
+   "n_years": 9,
+   "median_2015_2019": -16.5,
+   "median_2022_2026": -14.8
+  },
+  "D3": {
+   "slope_mm_yr_per_yr": -0.54,
+   "n_years": 9,
+   "median_2015_2019": -12.9,
+   "median_2022_2026": -16.7
+  }
+ },
+ "pre_unrest_median_maps": {
+  "asc_los": {
+   "D0": -15.6,
+   "D1": -12.5,
+   "D2": -12.5,
+   "D3": -15.5,
+   "D3gfel": -13.9,
+   "D3min": -19.1,
+   "ring_minus_gfel": -0.0,
+   "bowl_coverage": 1.0,
+   "gfel_ref_pixels": 867
+  },
+  "desc_los": {
+   "D0": -17.8,
+   "D1": -14.6,
+   "D2": -14.3,
+   "D3": -14.8,
+   "D3gfel": -13.6,
+   "D3min": -46.3,
+   "ring_minus_gfel": 0.3,
+   "bowl_coverage": 0.9,
+   "gfel_ref_pixels": 2215
+  },
+  "vertical": {
+   "D0": -15.0,
+   "D1": -14.6,
+   "D2": -15.5,
+   "D3": -16.4,
+   "D3gfel": -16.4,
+   "D3min": -37.5,
+   "ring_minus_gfel": -0.9,
+   "bowl_coverage": 0.9,
+   "gfel_ref_pixels": 847
+  },
+  "east": {
+   "D0": -6.5,
+   "D1": -9.1,
+   "D2": -8.2,
+   "D3": -7.6,
+   "D3gfel": -7.8,
+   "D3min": -40.1,
+   "ring_minus_gfel": 0.9,
+   "bowl_coverage": 0.9,
+   "gfel_ref_pixels": 847
+  },
+  "tsx_los_equivalent": {
+   "D0": -14.4,
+   "D1": -13.0,
+   "D2": -13.4,
+   "D3": -15.8,
+   "D3gfel": -14.6,
+   "D3min": -18.5,
+   "ring_minus_gfel": -0.4,
+   "bowl_coverage": 0.9,
+   "gfel_ref_pixels": 847
+  }
+ },
+ "tsx_equiv_minimum_location": {
+  "lon": -21.391,
+  "lat": 64.046,
+  "km_from_juncu_centre": 1.74
+ },
+ "vertical_tied_to_reyk": {
+  "reyk_ngl_up_mm_yr": -2.66,
+  "reyk_days": 1556,
+  "insar_up_at_reyk": -6.7,
+  "bowl_p5_abs": -19.2,
+  "bowl_min_abs": -40.3
+ },
+ "gnss_check_husm_minus_reyk": {
+  "asc": {
+   "n_pairs": 8,
+   "median_diff": 1.23,
+   "mean_diff": 0.16,
+   "sem_diff": 2.2,
+   "rms_diff": 5.83
+  },
+  "desc": {
+   "n_pairs": 3,
+   "median_diff": -6.11,
+   "mean_diff": -5.2,
+   "sem_diff": 3.7,
+   "rms_diff": 7.38
+  }
+ },
+ "closure_test": {
+  "20150627_20150907": {
+   "days": 72,
+   "n_chain": 6,
+   "chain_without_cc": [
+    "20150721_20150802",
+    "20150802_20150814"
+   ],
+   "bowl_pixels": 997,
+   "far_pixels": 65132,
+   "closure_bowl_minus_far_mm": 0.22,
+   "closure_far_median_mm": -4.25,
+   "long_pair_bowl_minus_far_mm": -4.01,
+   "closure_iqr_far_mm": 0.9
+  },
+  "20250604_20250926": {
+   "days": 114,
+   "n_chain": 10,
+   "chain_without_cc": [],
+   "bowl_pixels": 635,
+   "far_pixels": 43986,
+   "closure_bowl_minus_far_mm": 0.55,
+   "closure_far_median_mm": -7.06,
+   "long_pair_bowl_minus_far_mm": 0.88,
+   "closure_iqr_far_mm": 1.0
+  }
+ }
+}

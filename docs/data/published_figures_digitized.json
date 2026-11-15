@@ -1,0 +1,55 @@
+{
+ "note": "digitised from published figures; approximate, see script docstring",
+ "panels": {
+  "juncu2017_fig7_tsx_2012_2015_observed": {
+   "n_inner": 2303,
+   "ref_reading": -0.3,
+   "ring_4_7_reading": 0.9,
+   "p5_rel_paper_ref": -15.0,
+   "min_rel_paper_ref": -17.0,
+   "p5_rel_ring": -16.2,
+   "min_rel_ring": -18.2,
+   "px_per_km": 18.05
+  },
+  "juncu2017_fig7_tsx_2012_2015_plate_corrected": {
+   "n_inner": 2304,
+   "ref_reading": -0.3,
+   "ring_4_7_reading": -2.5,
+   "p5_rel_paper_ref": -19.8,
+   "min_rel_paper_ref": -21.8,
+   "p5_rel_ring": -17.6,
+   "min_rel_ring": -19.6,
+   "px_per_km": 18.05
+  },
+  "ducrocq2021_fig5_tsx_2015_2017": {
+   "n_inner": 1119,
+   "ref_reading": 1.2,
+   "ring_4_7_reading": -0.7,
+   "p5_rel_paper_ref": -17.3,
+   "min_rel_paper_ref": -20.3,
+   "p5_rel_ring": -15.4,
+   "min_rel_ring": -18.5,
+   "px_per_km": 12.98
+  },
+  "ducrocq2021_fig5_s1_t16_2015_2017": {
+   "n_inner": 1185,
+   "ref_reading": 1.2,
+   "ring_4_7_reading": 0.9,
+   "p5_rel_paper_ref": -15.6,
+   "min_rel_paper_ref": -17.3,
+   "p5_rel_ring": -15.3,
+   "min_rel_ring": -17.1,
+   "px_per_km": 12.96
+  }
+ },
+ "bar_juncu": {
+  "n": 160,
+  "vmin": -23.9,
+  "vmax": 7.9
+ },
+ "bar_ducrocq": {
+  "n": 806,
+  "vmin": -22.9,
+  "vmax": 22.9
+ }
+}

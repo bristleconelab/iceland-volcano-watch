@@ -1,4 +1,5 @@
-# Copied from the sibling project seismo-lab (scripts/seislib.py, 2026-11-12) without functional changes.
+# Vendored from the sibling project seismo-lab, scripts/seislib.py at commit 5229c22 (2026-11-12), unchanged.
+# Upstream file sha256 855571eb03b542cff41bd95ecf54316917fefd9425150c63a37e9caab2e3be36 (tests/test_vendor.py).
 """Catalogue statistics: completeness, Gutenberg-Richter b-value, declustering, Omori-Utsu.
 
 All functions take plain numpy arrays. Magnitudes are binned to `dm` (default 0.1) before any estimate.

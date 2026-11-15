@@ -2,9 +2,9 @@
  "window": "2023-11-10 12:00:00 .. 2023-11-12 00:00:00",
  "n_events": 793,
  "n_after_15utc": 738,
- "strike_deg": 37.0,
- "length_km_2p5_97p5": 15.3,
- "across_sd_km": 1.4,
+ "strike_deg": 36.8,
+ "length_km_2p5_97p5": 15.4,
+ "across_sd_km": 1.41,
  "depth_p10_p50_p90": [
   3.2,
   5.0,
@@ -12,8 +12,8 @@
  ],
  "m_max": 4.98,
  "n_m_ge_3": 212,
- "extent_first_hour_km": 3.5,
+ "extent_first_hour_km": 3.6,
  "extent_max_km": 15.5,
  "hour_of_max_extent": "2023-11-10 18:00:00",
- "growth_km_per_h": 5.98
+ "growth_km_per_h": 5.99
 }

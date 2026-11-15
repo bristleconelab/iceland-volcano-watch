@@ -1,0 +1,30 @@
+{
+ "_about": "Fixed inputs for scripts/svartsengi_gnss.py, each with its source. Dates are UTC days.",
+ "inflation_intervals": [
+  {"name": "I1", "start": "2024-10-03", "end": "2024-11-17", "why": "between events 8 and 9; VOGC starts 2024-09-30; AUSV gap Aug 2024 - Apr 2025"},
+  {"name": "I2", "start": "2024-12-12", "end": "2025-03-28", "why": "between events 9 and 10"},
+  {"name": "I3", "start": "2025-04-08", "end": "2025-07-12", "why": "between events 10 and 11"},
+  {"name": "I4", "start": "2025-08-12", "end": "2026-10-15", "why": "current cycle after event 11"}
+ ],
+ "pre_unrest_window": {"start": "2015-07-01", "end": "2019-12-31",
+  "why": "SENG starts mid-2015; Svartsengi unrest began in January 2020 (Flovenz et al. 2022)"},
+ "background_windows_for_sensitivity": [
+  ["2015-07-01", "2019-12-31"], ["2016-01-01", "2019-12-31"], ["2017-01-01", "2019-12-31"],
+  ["2015-07-01", "2018-12-31"], ["2015-07-01", "2017-12-31"]
+ ],
+ "gnss_errors_mm": {"horizontal": 3.0, "vertical": 8.0, "relative_model_error": 0.05},
+ "parks2025_source": {"lon": -22.454, "lat": 63.869, "depth_km": 4.0,
+  "source": "Parks et al. 2025, EPSL 658:119324, doi:10.1016/j.epsl.2025.119324 (Mogi source used for their GNSS volume series)"},
+ "imo_volumes": [
+  {"date": "2026-07-21", "volume_mm3": 28.3, "lo": 27.5, "hi": 29.1, "since": "2025-07-16",
+   "note": "IMO news update of 21 July 2026: since the start of the eruption on 16 July 2025; 95 % range; end date of the data not stated, the update date is used"},
+  {"date": "2026-08-16", "volume_mm3": 29.1, "lo": 28.3, "hi": 29.9, "since": "2025-07-17",
+   "note": "IMO news update of 18 August 2026; figure caption: 17 July 2025 to 16 August 2026; 95 % range"}
+ ],
+ "imo_source": "https://en.vedur.is/about-imo/news/ground-uplift-and-magma-accumulation-continue-beneath-svartsengi (page dated 9 Nov 2026, updated 10 Nov 2026; read 2026-11-16)",
+ "event_selection_rule": {
+  "rule": "an event's SENG volume loss is used only if the 5th percentile of the epicentral distance from SENG to the reviewed IMO earthquakes in the first 24 h after onset is >= 3.0 km",
+  "thresholds_reported_for_sensitivity_km": [2.0, 3.0, 4.0],
+  "why": "uses only the seismicity, not the GNSS losses or the published losses; written down on 2026-11-16 after the earlier (unblinded) selection of events 4, 6, 7, 8, 9, 11 had been seen"
+ }
+}

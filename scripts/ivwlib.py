@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from pyproj import Geod
 
 ROOT = Path(__file__).resolve().parents[1]
 NGL = ROOT / "data" / "raw" / "ngl"
@@ -27,12 +28,23 @@ def load_events() -> pd.DataFrame:
 
 
 # ------------------------------------------------------------------------------------------------ geometry
+GEOD = Geod(ellps="WGS84")
+
+
 def to_local_km(lon, lat, lon0: float, lat0: float):
-    """Equirectangular projection (km) about (lon0, lat0); error < 0.1 % over the ~30 km used here."""
-    lon, lat = np.asarray(lon, float), np.asarray(lat, float)
-    x = (lon - lon0) * np.cos(np.radians(lat0)) * 111.32
-    y = (lat - lat0) * 110.57
-    return x, y
+    """Azimuthal-equidistant coordinates (km, x east, y north) about (lon0, lat0) on the WGS84 ellipsoid.
+
+    Distances and azimuths are geodesics from pyproj.Geod, so x**2 + y**2 is the exact ellipsoidal distance squared.
+    (Until 2026-11-16 this was an equirectangular formula with 110.57 km per degree of latitude, the equatorial
+    value; at 64 N the meridian degree is 111.48 km, so north distances were 0.8 % short and east distances 0.27 %
+    short. See docs/corrections.md.)"""
+    lon, lat = np.broadcast_arrays(np.asarray(lon, float), np.asarray(lat, float))
+    shape = lon.shape
+    lo, la = lon.ravel(), lat.ravel()
+    az, _, d = GEOD.inv(np.full(lo.shape, float(lon0)), np.full(la.shape, float(lat0)), lo, la)
+    az = np.radians(np.asarray(az))
+    d = np.asarray(d) / 1e3
+    return (d * np.sin(az)).reshape(shape), (d * np.cos(az)).reshape(shape)
 
 
 def mogi(x_km, y_km, depth_km: float, dv_m3: float, nu: float = NU):

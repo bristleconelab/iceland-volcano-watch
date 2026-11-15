@@ -9,3 +9,6 @@ CLAUDE.md
 *.env
 *.tif
 *.zip
+
+# private working notes (paper outline etc.): never published
+/notes/

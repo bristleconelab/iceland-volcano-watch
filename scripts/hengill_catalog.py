@@ -143,6 +143,17 @@ for lab, w, m_ in (("seiscomp", scw, mS), ("sil", silw, mL)):
     R[f"match_{lab}"]["share_of_imo_ge_mc_found"] = float((m_["magnitude"] >= mc - 0.05).sum()
                                                           / (w["magnitude"] >= mc - 0.05).sum())
 
+# -------------------------------------------------------------------- 2b. what the damaged copy does to Mc and b
+# All 8,691 rows, no box. A user who follows the Zenodo record text takes column 4 as the magnitude (it is the depth
+# in km); a user who spots the swap takes column 5, which is |ML| (signs lost). Both are ordered by the Zenodo time
+# column for b-positive. Reference: the HQDD file itself in origin-time order.
+zt = pd.Timestamp("2018-01-01") + pd.to_timedelta(z.t * 365 - 1, unit="D")
+zo = z.assign(time=zt).sort_values("time", kind="stable")
+R["damaged_copy_effect"] = [stats("HQDD, all rows (reference)", q.sort_values("time").magnitude),
+                            stats("Zenodo col 5 = |ML| (signs lost)", zo.c5),
+                            stats("Zenodo col 4 as the record text says (= depth, km)", zo.c4)]
+R["damaged_copy_effect_note"] = "rate_per_day_ge_mc uses the 793-day window length; the rows span the same period"
+
 # ----------------------------------------------------------------------------------------- 3. Húsmúli
 def in_circle(d, lat="latitude", lon="longitude"):
     return d[sl.haversine_km(d[lat], d[lon], *HUSMULI) <= HUSMULI_R_KM]

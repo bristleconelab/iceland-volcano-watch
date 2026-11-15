@@ -1,0 +1,40 @@
+{
+ "rule": {
+  "rule": "an event's SENG volume loss is used only if the 5th percentile of the epicentral distance from SENG to the reviewed IMO earthquakes in the first 24 h after onset is >= 3.0 km",
+  "thresholds_reported_for_sensitivity_km": [
+   2.0,
+   3.0,
+   4.0
+  ],
+  "why": "uses only the seismicity, not the GNSS losses or the published losses; written down on 2026-11-16 after the earlier (unblinded) selection of events 4, 6, 7, 8, 9, 11 had been seen"
+ },
+ "result": {
+  "d5>=2.0": {
+   "events": [
+    3,
+    4,
+    8,
+    9,
+    10
+   ],
+   "ratio_median": 0.65,
+   "ratio_min": -0.26,
+   "ratio_max": 1.22
+  },
+  "d5>=3.0": {
+   "events": [],
+   "ratio_median": null,
+   "ratio_min": null,
+   "ratio_max": null
+  },
+  "d5>=4.0": {
+   "events": [],
+   "ratio_median": null,
+   "ratio_min": null,
+   "ratio_max": null
+  },
+  "all": {
+   "ratio_median": 0.65
+  }
+ }
+}
