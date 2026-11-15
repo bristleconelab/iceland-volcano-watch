@@ -234,3 +234,7 @@ licence file yet.
 - Lazecký, M. et al. 2020. LiCSAR: an automatic InSAR tool for measuring and monitoring tectonic and volcanic
   activity. *Remote Sensing* 12: 2430. doi:10.3390/rs12152430.
 - Icelandic Met Office news, 2025-2026 (en.vedur.is); IMO Quakes API.
+
+## Licence
+
+Code: MIT (see LICENSE). Derived tables and figures: CC BY 4.0, with the data attributions in the table above.
