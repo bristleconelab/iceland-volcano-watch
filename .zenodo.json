@@ -1,0 +1,12 @@
+{
+  "title": "iceland-volcano-watch: open-data analysis of the Svartsengi magma accumulation (GNSS, Sentinel-1)",
+  "upload_type": "software",
+  "description": "Reproducible open-data analysis of the 2023-2026 Svartsengi inflation (Reykjanes Peninsula, Iceland): station dependence of point-source magma volumes, radar 'virtual station' maps, joint GNSS and Sentinel-1 source fits (point, line of point sources, compound dislocation model port of Nikkhoo et al. 2017), with all derived tables, figures and automated tests. Retrospective only; no forecasts.",
+  "creators": [{"name": "Ismoilov, Otabek", "orcid": "0009-0008-2785-3691"}],
+  "license": "MIT",
+  "keywords": ["Svartsengi", "Reykjanes Peninsula", "magma accumulation", "GNSS", "InSAR", "deformation source"],
+  "related_identifiers": [
+    {"identifier": "10.1016/j.epsl.2025.119324", "relation": "references", "scheme": "doi"},
+    {"identifier": "10.1093/gji/ggw427", "relation": "references", "scheme": "doi"}
+  ]
+}
