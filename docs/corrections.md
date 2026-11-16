@@ -21,6 +21,13 @@ which includes stations near the inflation centre such as SKSH that NGL does not
 identified. Our east/up result (a compact source fits, a flat sill does not) is an independent confirmation of
 Parks et al.'s choice, not a new finding.
 
+**Resolved the same day (`scripts/network_volume.py`):** applying IMO's model (point source fixed at 4 km at
+Parks' position) to all five open NGL stations gives 22.6-23.8 Mm³ on 21 Jul 2026, and 19.6-28.0 Mm³ for every
+leave-one-out subset, against SENG alone 34.7 and IMO 28.3. SENG lies N44E of the source, on the long axis of the
+north-east-elongated uplift that a point source cannot fit (χ²/dof 14-24), so the SENG-only conversion reads high.
+The headline "32.9-43.7 Mm³, above IMO" was therefore an artefact of using SENG alone and was removed from the
+main findings. The ~1.2 factor in the per-event losses (3-5 stations with a dike) is a separate, unresolved issue.
+
 ### Hellisheiði "mismatch": a definition difference, not a measurement difference
 
 **Was:** "−14.6 mm/yr LOS vs published 24-26 mm/yr: lower, ~60 % of the published peak … not separated" (README §C,

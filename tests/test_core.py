@@ -386,5 +386,31 @@ class TestVendor(unittest.TestCase):
                          "855571eb03b542cff41bd95ecf54316917fefd9425150c63a37e9caab2e3be36")
 
 
+class TestNetworkVolume(unittest.TestCase):
+    """network_volume.fit recovers a synthetic point-source volume in every variant, with and without a translation."""
+
+    def _obs(self, src, dv, shift=(0.0, 0.0)):
+        import network_volume as N
+        sites = pd.DataFrame(dict(lon=[-22.434, -22.416, -22.471, -22.33, -22.74],
+                                  lat=[63.882, 63.840, 63.835, 63.98, 63.97]))
+        gx, gy, gz = N.greens(sites, src)
+        return sites.assign(de=gx * dv + shift[0], dn=gy * dv + shift[1], du=gz * dv)
+
+    def test_recovers_volume(self):
+        import network_volume as N
+        src = dict(lon=-22.454, lat=63.869, depth_km=4.0)
+        for v in N.VARIANTS:
+            dv, c2 = N.fit(self._obs(src, 25.0), src, v)
+            self.assertAlmostEqual(dv, 25.0, places=6)
+            self.assertLess(c2, 1e-12)
+        dv, _ = N.fit(self._obs(src, 25.0, shift=(7.0, -4.0)), src, "3d_translation")
+        self.assertAlmostEqual(dv, 25.0, places=6)
+
+    def test_seng_gz_matches_published_scale(self):
+        import network_volume as N
+        seng = pd.DataFrame(dict(lon=[-22.433714], lat=[63.882239]))
+        self.assertAlmostEqual(float(N.greens(seng, dict(lon=-22.454, lat=63.869, depth_km=4.0))[2][0]), 11.38, places=2)
+
+
 if __name__ == "__main__":
     unittest.main()

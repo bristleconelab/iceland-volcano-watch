@@ -11,14 +11,15 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
 **Main findings so far**
 - Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source near −22.46 E, 63.87 N at about 4 km depth.
   Splitting the radar into east and up motion rules out a flat sill and favours a compact source, independently
-  confirming Parks et al. (2025), who also preferred a point source. With that source the volume accumulated by
-  21 Jul 2026 is 32.9-43.7 Mm³, above the Icelandic Met Office's 28.3 Mm³ (27.5-29.1).
+  confirming Parks et al. (2025), who also preferred a point source.
 - With a dike added at each event, the volume each eruption drained from the source follows the published losses
   for 8 of 10 events (ratio 0.89-1.33, typically 1.2), a factor similar to that of the accumulated volume.
-- The ~1.2 factor is **not** a source-model difference: the published series also uses a Mogi source at 4 km at
-  almost the same place, and with exactly that source our SENG series gives 34.7 Mm³ on 21 Jul 2026 (1.23 x IMO).
-  The cause lies in the data side (SENG-only conversion and NGL stations against IMO's own GNSS network) and is
-  not yet identified.
+- **The volume depends on which GPS stations are used, by up to a factor of two.** With IMO's own model (a point
+  source fixed at 4 km, Parks et al. 2025) the volume accumulated by 21 Jul 2026 is 34.7 Mm³ from SENG alone,
+  19.6-28.0 Mm³ from any multi-station subset of the five open stations, and 18-22 Mm³ from AUSV or GEVK alone.
+  IMO's 28.3 Mm³ (27.5-29.1) lies at the top of the multi-station range. SENG sits on the north-east axis of the
+  elongated uplift, which a point source cannot reproduce (χ²/dof 14-24), so it overstates the volume. The earlier
+  "1.2 times IMO" came from using SENG alone, not from a different model.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -60,7 +61,7 @@ same convention, so the comparisons below are like with like.
 | Inflow, cycles Jun 2024-Mar 2025 | 2.0-3.1 m³/s (2.4-3.7 with Parks' source) | 2.4-4 m³/s | consistent, ours at the low end |
 | Volume lost per event | all GPS stations + an Okada dike per event (`event_dike_losses.csv`): 8 of 10 events within 0.89-1.33 times the published loss; events 3 and 10 do not fit | Parks et al. 2025 Table 1; EGU26-6017 | **consistent in pattern, about 1.2 times larger**; the single-station (SENG) losses without a dike term are not usable |
 | Recharge before events 7-11 | 17.0, 21.2, 18.2, 21.8, 20.8 Mm³ | 17-23 Mm³ ("last five events", EGU26-6017) | consistent, all five inside the range |
-| Accumulated since the 16 Jul 2025 eruption, at 21 Jul / 16 Aug 2026 | 29.1 / 30.2 Mm³ (median source, 3.875 km). Range over source depth 3.50-4.75 km and Parks' source: **24.6-41.6 / 25.5-43.2 Mm³** | IMO 28.3 (27.5-29.1) / 29.1 (28.3-29.9) Mm³, 95 % | consistent within the source-geometry uncertainty; our central value is at or just above IMO's upper bound |
+| Accumulated since the 16 Jul 2025 eruption, at 21 Jul / 16 Aug 2026 | 29.1 / 30.2 Mm³ (median source, 3.875 km). Range over source depth 3.50-4.75 km and Parks' source: **24.6-41.6 / 25.5-43.2 Mm³** | IMO 28.3 (27.5-29.1) / 29.1 (28.3-29.9) Mm³, 95 % | consistent within the source-geometry uncertainty; these SENG-only values read high: with IMO's model, multi-station fits give 19.6-28.0 Mm³ on 21 Jul ("Which stations?") |
 | SENG uplift, 3 months to 15 Sep / 30 Sep 2026 | 49.2 / 41.1 mm | IMO "about 5 cm" / "about 4 cm" | consistent |
 | Current cycle to 17 Oct 2026 (452 days from the post-event level) | **32.5 Mm³**; inflow per 3 months 1.23 → 0.97 → 0.56 → 0.51 → 0.47 m³/s | IMO: slowest accumulation so far | largest recharge of any cycle, lowest inflow |
 
@@ -118,11 +119,10 @@ earthquakes of the first 24 h (top 0 km for eruptions, 1 km otherwise, bottom 4 
 
 - Events 3 (Jan 2024) and 10 (Apr 2025) do not fit one uniform dike (χ²/dof 297 and 93) and are left out.
 - The dike volumes are poorly constrained by 3-5 stations and are not reported as results.
-- The typical ratio of about 1.2 is similar to the accumulated-volume difference (32.9-43.7 against 28.3 Mm³, a
-  factor of 1.16-1.54). It is not explained by the source model: Parks et al. (2025) use a Mogi source at 4 km
-  (−22.454 E, 63.869 N), and that same source applied to our SENG series gives 34.7 Mm³ on 21 Jul 2026, 1.23 times
-  IMO's 28.3 (`imo_volume_comparison.csv`, column `parks2025`). The offset is therefore on the data side; the
-  cause is open (see Next steps).
+- The typical ratio of about 1.2 is not explained by the source model: Parks et al. (2025) also use a point source
+  at 4 km. Their losses come from joint radar + GPS inversions with a segmented dike and two graben faults; ours
+  from 3-5 stations and one uniform dike. Which difference gives the factor is not resolved. (The similar factor in
+  the accumulated volume comes from using SENG alone; see "Which stations?" below.)
 
 **Correlated radar noise (`scripts/joint_covariance.py`, `docs/data/joint_covariance.csv`,
 `docs/data/insar_covariance.json`).** The joint fits above treat the radar blocks as independent. Here an exponential
@@ -141,7 +141,33 @@ and track (λ = 0.6-4.1 km, s = 3.3-9.1 mm, nugget 0.6-3.8 mm) and both models a
 | Apr-Oct 2026 (ascending only) | 4.75 km, 8.3 Mm³ | 5.5 km, 7.3 Mm³ | 43.7 / 36.7 Mm³ |
 
 IMO's 28.3 Mm³ (27.5-29.1) for 21 Jul 2026 lies inside the 24.5-43.7 Mm³ spread of all rows. The east/up test above
-rules out the sill rows; the point-source rows alone give 32.9-43.7 Mm³, above IMO.
+rules out the sill rows; the point-source rows alone give 32.9-43.7 Mm³. All of these rows convert SENG alone, which
+overstates the volume (next paragraph).
+
+**Which stations? (`scripts/network_volume.py`, `docs/data/network_volume_imo.csv`, `network_volume_station.csv`,
+`network_volume_series.csv`).** IMO's series is an automated GNSS-only inversion with a point source fixed at 4 km
+at −22.454 E, 63.869 N (Parks et al. 2025, Sect. 3.2). The same model applied to all five open NGL stations, from the
+post-eruption level of 22 Jul 2025 to 21 Jul 2026:
+
+| Stations | Volume (Mm³) | / IMO 28.3 |
+|---|---|---|
+| SENG alone (vertical; N44E of the source, 1.8 km) | 34.7 | 1.23 |
+| GEVK alone (vertical; N191E, 4.2 km) | 22.0 | 0.78 |
+| AUSV alone (vertical; N149E, 3.7 km) | 18.1 | 0.64 |
+| All five, east + north + up (with or without a common translation) | 22.6-22.8 | 0.80-0.81 |
+| All five, up only | 23.8 | 0.84 |
+| Any four of five (leave one out), all variants | 19.6-28.0 | 0.69-0.99 |
+
+- VOGC and NYLA are 13-18 km away (0.3 and 0.15 mm per Mm³); alone they give no usable volume.
+- The point source does not fit the five stations (χ²/dof 14-24 at this date), and the misfit grows through the cycle
+  (`network_volume_series.csv`). Parks et al. note the inflation is elongated north-east, which a point source
+  cannot capture. SENG lies on that axis, AUSV and GEVK off it (towards Grindavík), so SENG reads high.
+- The radar agrees only in part: per window, SENG alone gives 0.95-1.30 times the joint GPS + radar volume, and
+  GEVK alone gives the same or less, so the field-wide volume sits between the stations.
+- Not tested: an elongated (prolate) source; IMO's own station set (it includes stations near the centre, such as
+  SKSH, that NGL does not serve); geothermal or graben subsidence at AUSV and GEVK, which have no pre-unrest record.
+- IMO's 95 % interval (±3 %) is a formal error for one fixed model and network. The spread between station sets here
+  is about −30 % to +23 %. Ratios between cycles stay valid because one fixed model and station is used for all.
 
 **Uncertainty of the volumes.** SENG's sensitivity to the source is 18.1 / 14.4 / 9.5 mm per Mm³ at 3.25 / 3.75 /
 4.75 km depth. The same 450 mm of uplift is therefore 24.8, 31.4 or 47.3 Mm³ (`volume_sensitivity_source.csv`).
@@ -273,7 +299,7 @@ untested.
 
 ```bash
 uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
-.venv/bin/python -I -m unittest discover -s tests -v      # 22 synthetic tests, no data needed
+.venv/bin/python -I -m unittest discover -s tests -v      # 34 synthetic tests, no data needed
 ```
 
 The full pipeline (downloads about 190 MB into the git-ignored `data/`) is in [docs/method.md](docs/method.md).
@@ -301,8 +327,9 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
    disagreement as a single-look depth-volume trade-off.
 2. Done 2026-11-16: Okada dikes give event losses consistent with the published pattern (about 1.2 times larger);
    events 3 and 10 need more than one uniform dike.
-3. Find out why the same Mogi source as Parks et al. (2025) gives volumes ~1.2 times theirs: fit the volume with
-   their fixed source to every open GNSS station (not SENG alone) and compare episode by episode with their Fig. 6.
+3. Done 2026-11-16: the ~1.2 factor against IMO comes from converting SENG alone; with IMO's model, multi-station
+   volumes are 19.6-28.0 Mm³ against IMO's 28.3 (`network_volume.py`). Open: an elongated source that fits all
+   stations and the radar.
 4. Find out why the Aug 2025-Oct 2026 interval fits poorly with one Mogi source (χ²/dof 30).
 5. Hellisheiði: the remaining ~2 mm/yr against the published Sentinel-1 map; EGMS for 2019-2023.
 6. Automatic daily update (NGL rapid series + Quakes API) that appends to the volume and rate series.
