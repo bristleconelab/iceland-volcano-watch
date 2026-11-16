@@ -164,14 +164,30 @@ def plot(fields, ring_df, st_df, gc):
     ax.set_ylabel("Latitude (°N)")
     ax.set_title("a  Aug-Nov 2025, IMO point source", loc="left", fontsize=7)
     ax = axs[1]
+    import elongated_source as E
+    import implied_volume_harmonics as IH
+    tt = np.linspace(0, 360, 361)
+
+    def two_harmonic(az, v):
+        th = np.radians(az)
+        A = np.c_[np.ones_like(th), np.cos(th), np.sin(th), np.cos(2 * th), np.sin(2 * th)]
+        c, *_ = np.linalg.lstsq(A, v, rcond=None)
+        T = np.radians(tt)
+        return c[0], np.c_[np.ones_like(T), np.cos(T), np.sin(T), np.cos(2 * T), np.sin(2 * T)] @ c
+
     for k, col in (("I2 2024-12-12", "#999999"), ("I3 2025-04-08", "#1f6fb4"), ("I4 2025-08-12", "#d0582a")):
         f = fields[k]
         ring = f[(f.r > RING[0]) & (f.r < RING[1])]
-        mean = ring_df[ring_df.window == k].ring_mean.iloc[0]
+        mean, curve = two_harmonic(ring.az.values, ring.V.values)
         ax.plot(ring.az, ring.V / mean, ".", ms=2.5, color=col, alpha=0.6, label=k.split()[0] + " " + k.split()[1][:7])
-        r = ring_df[ring_df.window == k]
-        mids = np.arange(15, 360, 30)
-        ax.plot(mids, r.cos2_model / mean, "-", color=col, lw=1.0)
+        ax.plot(tt, curve / mean, "-", color=col, lw=1.0)
+    es = pd.read_csv(DATA / "elongated_source.csv").query("window == 'I3 2025-04-08' and L_km == 6.0").iloc[0]
+    f = fields["I3 2025-04-08"]
+    x, y = to_local_km(f.lon.values, f.lat.values, es.lon, es.lat)
+    Vm = IH.process(f, E.line_greens(np.asarray(x), np.asarray(y), es.depth_km, 6.0, es.strike)[2] * es.dv_mm3)
+    ringm = ((f.r > RING[0]) & (f.r < RING[1])).values
+    mean_m, curve_m = two_harmonic(f.az.values[ringm], Vm[ringm])
+    ax.plot(tt, curve_m / mean_m, "--", color="#1f6fb4", lw=1.1, label="6 km source, I3 (model)")
     for s in ("AUSV", "GEVK"):
         az = st_df[st_df.site == s].azimuth.iloc[0]
         ax.axvline(az, color="#222222", lw=0.6, ls="--")
@@ -182,7 +198,7 @@ def plot(fields, ring_df, st_df, gc):
     ax.set_xlabel("Azimuth from source (°)")
     ax.set_ylabel("Implied volume / ring mean")
     ax.legend(frameon=False, fontsize=6, loc="lower left", markerscale=3)
-    ax.set_title("b  Ring 2.5-4.5 km; lines: cos 2θ fit", loc="left", fontsize=7)
+    ax.set_title("b  Ring 2.5-4.5 km; lines: first + second harmonic", loc="left", fontsize=7)
     IMG.mkdir(parents=True, exist_ok=True)
     fig.savefig(IMG / "fig_implied_volume.png", dpi=300)
     fig.savefig(IMG / "fig_implied_volume.pdf")
