@@ -1,0 +1,4 @@
+model,lobe_max_mm,lobe_p90_mm,residual_at_seng_mm,rms_mm,peak_up_mm
+point (joint),45.9,42.6,-2.4,8.88,215.0
+line L=4,33.6,31.5,-16.8,6.66,215.0
+pressurised prolate CDM,43.3,37.7,-20.5,7.53,215.0

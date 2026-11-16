@@ -1,0 +1,4 @@
+site,gz_mm_per_mm3,vol_5day_mean,vol_one_sided_fit,fit_sigma,difference
+SENG,11.38,34.75,34.9,0.31,0.15
+AUSV,6.68,18.11,18.11,0.74,0.0
+GEVK,5.59,22.04,24.69,0.98,2.65

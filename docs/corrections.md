@@ -5,6 +5,17 @@ Numbers come from the files named; rerun the scripts listed in [method.md](metho
 
 ## 2026-11-16
 
+### Second review: shape credited for what depth does; endpoint sensitivity understated
+
+**Was (manuscript text and README of 4bf6cd8-fac9922):** an elongated cavity "brings the stations closer"; "the
+prolate cavity fits the radar best"; one-sided endpoint fits "change the single-station volumes by at most 0.6 Mm³".
+
+**Now:** a point source at the same position and 3.25 km depth gives the same station ratio (1.29 against 1.27) and
+five-station volume (22.1 against 21.7 Mm³); the radar accepts that depth only for an elongated body. The 6 km line
+of point sources fits the radar better than the pressurised prolate in every window and reproduces the azimuthal
+pattern; the prolate does not. One-sided endpoint fits change GEVK by 2.65 Mm³ (12 %), SENG and AUSV by at most 0.15.
+See docs/review-2026-11-16.md.
+
 ### Residual uplift lobe: "up to ~15 mm" was a saturated colour scale
 
 **Was (523ccf6, README):** "an uplift lobe of up to ~15 mm west-south-west of the source remains with both models,

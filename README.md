@@ -20,21 +20,25 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
   GEVK alone, 23.8 from all five and 19.6-28.0 from any four. IMO's 28.3 (27.5-29.1), from its larger network, lies
   inside this spread. The earlier "1.2 times IMO" came from converting SENG alone.
 - **Why the stations differ.** Radar "virtual stations" (`scripts/implied_volume.py`): the volume a station would
-  report varies smoothly with azimuth around the source, by ±11-22 % on a 2.5-4.5 km ring, highest along N54-62E
-  (the crater row). SENG lies near the high axis; AUSV and GEVK, both in Grindavík, in the low sector. In Apr-Jul
-  2025, after the 1 Apr 2025 dike beneath Grindavík, that sector dips further. Over 3-month windows GNSS and the
-  radar at the same place differ by up to 30 % (SENG) and 50 % (GEVK), so station-local motion adds to the source
-  geometry.
-- The elongation itself is known: Parks et al. (2025) note it, Lanzi et al. (EGU26-12710) fit ellipsoidal sources
-  (about 3 km deep, 15-18 Mm³ against spheres at 3.9 km, 18-21 Mm³, since March 2024), and Sigmundsson et al.
-  (IAVCEI 2025) use a horizontal spheroid. Our line-of-point-sources fits below agree in direction but are a
-  kinematic stand-in, not a pressurised cavity. A pressurised prolate cavity (compound dislocation model, Nikkhoo
-  et al. 2017; `scripts/cdm_source.py`) also fits the radar far better than a point source (Δχ² 14-409), along
-  N60-75E at 3.25-4.0 km, and brings the five stations to χ²/dof 3-5 (point source 14); its cavity volume from
-  22 Jul 2025 to 21 Jul 2026 is 21.7-25.7 Mm³ (five stations, vertical), below IMO's 28.3, as Lanzi et al. found
-  for ellipsoids against spheres. The east/up test, now done consistently (`scripts/east_up_consistent.py`), rejects
-  flat sills (1.33-1.54) and thin pressurised cylinders (1.15-1.26) but cannot separate a point source (0.90-0.94)
-  from a line of point sources (0.92-0.98): the shape is not resolved, and the volume carries that uncertainty.
+  report varies around the source. On a 2.5-4.5 km ring the pattern has a second harmonic of 16-25 % along N58-62E
+  and a first harmonic of 9-23 % towards WNW (`implied_volume_harmonics.csv`). AUSV and GEVK, both in Grindavík, sit
+  in the low part; after the 1 Apr 2025 dike beneath Grindavík that sector dips further. Over 3-month windows GNSS
+  and the radar at the same place differ by up to 30 % (SENG) and a factor of 2 (GEVK), a station-scale effect at
+  the Grindavík sites.
+- **What reduces the spread is depth, not shape.** At the radar-preferred position, a point source at 3.25 km gives
+  the same station ratio as an elongated cavity (SENG/AUSV 1.29 against 1.27; IMO's source 1.92) and the same
+  five-station volume (22.1 against 21.7 Mm³; `station_volume_geometry.csv`). The radar accepts that depth only for
+  an elongated body: a point source at 3.25-3.5 km fits the radar worse than at 4-4.25 km by Δχ² 170-530, while an
+  elongated body at 3.25-3.5 km fits better than any point source by Δχ² 150-410
+  (`station_volume_geometry_radar_chi2.csv`).
+- **Which elongated body.** A line of point sources about 6 km long along N60E reproduces the observed second
+  harmonic (24-28 % predicted, N60E) and fits the radar best; a single uniformly pressurised prolate cavity
+  (compound dislocation model, Nikkhoo et al. 2017) reproduces the axis but only 5-7 % amplitude and fits worse than
+  the line in every window. The data favour a body extended further along strike than one pressurised cavity, for
+  example several compact pockets (Lanzi et al. 2025 raise multiple pockets). The elongation itself is known
+  (Parks et al. 2025; Lanzi et al. EGU26-12710; Sigmundsson et al. IAVCEI 2025). Neither model explains the WNW
+  first harmonic, i.e. the residual uplift west-south-west of the source (34-46 mm against 215 mm peak,
+  `robustness_residual_lobe.csv`).
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
