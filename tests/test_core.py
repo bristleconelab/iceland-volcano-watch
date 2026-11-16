@@ -153,6 +153,39 @@ class TestOkada(unittest.TestCase):
         np.testing.assert_allclose(un[2], un[3], rtol=1e-12)
 
 
+class TestJoint(unittest.TestCase):
+    def test_geometry_shift_matches_direct_projection(self):
+        # the joint fit places a trial source by shifting about one origin; within ~30 km this must agree with the
+        # exact local projection about the source to < 0.1 % of the distance
+        import pandas as pd
+        from ivwlib import to_local_km
+        from svartsengi_joint import Geometry
+        lon = np.array([-22.70, -22.30, -22.45, -22.20]); lat = np.array([63.82, 63.95, 63.88, 63.99])
+        geo = Geometry(pd.DataFrame(dict(lon=lon, lat=lat)), {}, -22.454, 63.869)
+        for slon, slat in ((-22.50, 63.85), (-22.40, 63.90)):
+            sx, sy = geo.src(slon, slat)
+            ex, ey = to_local_km(lon, lat, slon, slat)
+            d = np.hypot(ex, ey)
+            err = np.hypot(geo.xg - sx - ex, geo.yg - sy - ey)
+            self.assertTrue(np.all(err / d < 1e-3), msg=f"{err / d}")
+
+    def test_chain_picks_longest_span_with_fewest_pairs(self):
+        import tempfile
+        from pathlib import Path
+        import svartsengi_joint as J
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "F" / "los_mm"; d.mkdir(parents=True)
+            for n in ("20250101_20250113", "20250113_20250125", "20250101_20250107", "20250107_20250113",
+                      "20250125_20250131", "20250201_20250213"):
+                (d / f"{n}.tif").touch()
+            old = J.RAW; J.RAW = Path(t)
+            try:
+                c = J.chain("F", "2025-01-01", "2025-01-31")
+            finally:
+                J.RAW = old
+            self.assertEqual(c, ["20250101_20250113", "20250113_20250125", "20250125_20250131"])
+
+
 class TestRateFitting(unittest.TestCase):
     def series(self, rate_u=-16.4, n_days=1500, noise=3.0, seed=1):
         rng = np.random.default_rng(seed)

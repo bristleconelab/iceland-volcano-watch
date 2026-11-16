@@ -9,8 +9,10 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
 - how fast the Hengill and Svartsengi geothermal fields are sinking.
 
 **Main findings so far**
-- Recharge volumes from GNSS agree with the Icelandic Met Office within the uncertainty of the source depth
-  (for example 29.1 Mm³ here against IMO 28.3 Mm³ on 21 Jul 2026; range 24.6-41.6 Mm³ over plausible source depths).
+- Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source at 3.75-4.25 km depth (GPS alone allowed
+  about 3.25-4.75 km). With that source our recharge volumes come out **larger** than the Icelandic Met Office's:
+  29.7-36.3 Mm³ (32.9 at the best-fitting 4.0 km) against IMO 28.3 Mm³ (27.5-29.1) on 21 Jul 2026. They agree only
+  at the shallow end of the range.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -55,6 +57,21 @@ same convention, so the comparisons below are like with like.
 | Accumulated since the 16 Jul 2025 eruption, at 21 Jul / 16 Aug 2026 | 29.1 / 30.2 Mm³ (median source, 3.875 km). Range over source depth 3.50-4.75 km and Parks' source: **24.6-41.6 / 25.5-43.2 Mm³** | IMO 28.3 (27.5-29.1) / 29.1 (28.3-29.9) Mm³, 95 % | consistent within the source-geometry uncertainty; our central value is at or just above IMO's upper bound |
 | SENG uplift, 3 months to 15 Sep / 30 Sep 2026 | 49.2 / 41.1 mm | IMO "about 5 cm" / "about 4 cm" | consistent |
 | Current cycle to 17 Oct 2026 (452 days from the post-event level) | **32.5 Mm³**; inflow per 3 months 1.23 → 0.97 → 0.56 → 0.51 → 0.47 m³/s | IMO: slowest accumulation so far | largest recharge of any cycle, lowest inflow |
+
+**Joint GPS + radar fit (added 2026-11-16, `scripts/svartsengi_joint.py`).** Chained 6- and 12-day LiCSAR
+interferograms (ascending 016A and descending 155D) over each inflation window, block-medianed to 937-1,878
+points per window, are fitted together with the GPS displacements over the same dates (`docs/data/joint_fits.csv`, figures
+`docs/img/joint_fit_*.png`).
+- Best source in every window from Oct 2024 to Nov 2025: −22.456 E, 63.872 N, 4.0 km (Parks et al. 2025: −22.454 E,
+  63.869 N, 4 km). The last window (Apr-Oct 2026) gives 4.75 km.
+- χ²/dof drops from 3.3-24.5 (GPS alone, same dates) to 1.9-5.8 for the joint fit. The GPS part alone still misfits
+  (χ² 38-172 over 12-15 GPS components), so one point source is still too simple.
+- The formal depth interval collapses to one grid step because the radar points are spatially correlated and treated
+  as independent; it is not a real uncertainty. Refitting with one track at a time and with GPS weighted 100 times
+  more (`docs/data/joint_frame_check.csv`) gives **3.75-4.25 km** for Oct 2024-Nov 2025 (4.75-5.25 km in 2026), and
+  volume changes that differ between the two tracks by 4-48 % (Dec 2024-Mar 2025: 20.1 against 13.6 Mm³).
+- The joint source lies 1.58 km from SENG instead of 1.29 km. For the SENG volume series this scales the volumes by
+  1.02, 1.13 and 1.25 at 3.75, 4.0 and 4.25 km: 29.1 becomes 29.7, 32.9 and 36.3 Mm³ on 21 Jul 2026.
 
 **Uncertainty of the volumes.** SENG's sensitivity to the source is 18.1 / 14.4 / 9.5 mm per Mm³ at 3.25 / 3.75 /
 4.75 km depth. The same 450 mm of uplift is therefore 24.8, 31.4 or 47.3 Mm³ (`volume_sensitivity_source.csv`).
@@ -209,8 +226,8 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
 
 ## Next steps
 
-1. Use the InSAR in the Mogi fit (LiCSAR 6-12 day pairs during inflation) to tie down depth. Depth is the main
-   volume uncertainty (±35-40 %).
+1. Done 2026-11-16: radar in the Mogi fit narrows depth to 3.75-4.25 km; the two tracks still disagree by up to
+   48 % in volume change. Next: a sill or a two-source model, and a spatially correlated InSAR covariance.
 2. Model the dikes (Okada) or estimate losses from stations away from them; the single-station loss is not validated.
 3. Find out why the Aug 2025-Oct 2026 interval fits poorly with one Mogi source (χ²/dof 30).
 4. Hellisheiði: the remaining ~2 mm/yr against the published Sentinel-1 map; EGMS for 2019-2023.
