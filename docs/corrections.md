@@ -14,7 +14,8 @@ prolate cavity fits the radar best"; one-sided endpoint fits "change the single-
 five-station volume (22.1 against 21.7 Mm³); the radar accepts that depth only for an elongated body. The 6 km line
 of point sources fits the radar better than the pressurised prolate in every window and reproduces the azimuthal
 pattern; the prolate does not. One-sided endpoint fits change GEVK by 2.65 Mm³ (12 %), SENG and AUSV by at most 0.15.
-See docs/review-2026-11-16.md.
+See docs/review-2026-11-16.md. (The first README version of this paragraph gave the depth Δχ² as 170-530 and
+150-410; from `station_volume_geometry_radar_chi2.csv` they are 100-530 and 120-410.)
 
 ### Residual uplift lobe: "up to ~15 mm" was a saturated colour scale
 

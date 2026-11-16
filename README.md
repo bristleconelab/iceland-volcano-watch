@@ -28,8 +28,8 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
 - **What reduces the spread is depth, not shape.** At the radar-preferred position, a point source at 3.25 km gives
   the same station ratio as an elongated cavity (SENG/AUSV 1.29 against 1.27; IMO's source 1.92) and the same
   five-station volume (22.1 against 21.7 Mm³; `station_volume_geometry.csv`). The radar accepts that depth only for
-  an elongated body: a point source at 3.25-3.5 km fits the radar worse than at 4-4.25 km by Δχ² 170-530, while an
-  elongated body at 3.25-3.5 km fits better than any point source by Δχ² 150-410
+  an elongated body: a point source at 3.25-3.5 km fits the radar worse than at 4-4.25 km by Δχ² 100-530, while an
+  elongated body at 3.25-3.5 km fits better than any point source by Δχ² 120-410
   (`station_volume_geometry_radar_chi2.csv`). The result does not depend on the GNSS being in the fit: with
   geometries fitted to the radar alone (`insar_only_geometry.csv`) the 6 km line is again preferred and gives
   SENG/AUSV 1.11-1.48, against 1.61-1.88 for the radar-only point source.
