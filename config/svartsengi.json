@@ -26,5 +26,18 @@
   "rule": "an event's SENG volume loss is used only if the 5th percentile of the epicentral distance from SENG to the reviewed IMO earthquakes in the first 24 h after onset is >= 3.0 km",
   "thresholds_reported_for_sensitivity_km": [2.0, 3.0, 4.0],
   "why": "uses only the seismicity, not the GNSS losses or the published losses; written down on 2026-11-16 after the earlier (unblinded) selection of events 4, 6, 7, 8, 9, 11 had been seen"
+ },
+ "insar_short_pairs": {
+  "why": "LiCSAR 6- and 12-day pairs inside the inflation intervals, summed in chains so that the atmosphere of the intermediate epochs cancels; input of scripts/svartsengi_joint.py. The I4 windows leave out the snow months; I2 (winter) is kept to report its coherence.",
+  "frames": ["016A_02504_162118", "155D_02484_191814"],
+  "bbox": [-22.75, 63.80, -22.15, 64.00],
+  "max_days": 12,
+  "windows": [
+   {"interval": "I1", "start": "2024-10-03", "end": "2024-11-17"},
+   {"interval": "I2", "start": "2024-12-12", "end": "2025-03-28"},
+   {"interval": "I3", "start": "2025-04-08", "end": "2025-07-12"},
+   {"interval": "I4", "start": "2025-08-12", "end": "2025-11-15"},
+   {"interval": "I4", "start": "2026-04-01", "end": "2026-10-15"}
+  ]
  }
 }

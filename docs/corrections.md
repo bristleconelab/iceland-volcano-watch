@@ -128,3 +128,7 @@ now also gates on coverage.
   depth range it is −16 % to +43 %.
 - README §C said the first-cycle magmatic uplift rate was "~3,300 mm/yr". It is ~3,000 mm/yr: 7.0 m³/s × 13.58 mm
   per Mm³.
+
+- 2026-11-16: Figlioli et al. 2026 was cited as *Bollettino di Geofisica Teorica ed Applicata*, "not checked". The
+  journal is now *Bulletin of Geophysics and Oceanography*; the paper is 67(2): 277-294, doi:10.4430/bgo00528
+  (mEDRA DOI, which is why Crossref did not find it). Checked on the journal page.

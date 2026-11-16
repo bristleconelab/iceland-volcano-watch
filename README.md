@@ -238,8 +238,9 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
 - Rivalta, E. & Segall, P. 2008. Magma compressibility and the missing source for some dike intrusions. *GRL* 35(4).
   doi:10.1029/2007GL032521.
 - Segall, P. 2010. *Earthquake and Volcano Deformation*. Princeton University Press. doi:10.1515/9781400833856.
-- Figlioli et al. 2026, *Bollettino di Geofisica Teorica ed Applicata* (Reykjanes b-value, 2020-2024); not checked
-  in Crossref.
+- Figlioli, A., D'Alessandro, A., Martorana, R. & Guastella, M. 2026. Seismo-magmatic interaction and stress evolution
+  during the 2020-2024 Reykjanes Rift cycle, Iceland. *Bulletin of Geophysics and Oceanography* 67(2): 277-294.
+  doi:10.4430/bgo00528 (DOI registered with mEDRA, not Crossref; checked 2026-11-16 on bgo.ogs.it).
 - Blewitt, G., Hammond, W. C. & Kreemer, C. 2018. Harnessing the GPS data explosion for interdisciplinary science.
   *Eos* 99. doi:10.1029/2018EO104623.
 - Lazecký, M. et al. 2020. LiCSAR: an automatic InSAR tool for measuring and monitoring tectonic and volcanic

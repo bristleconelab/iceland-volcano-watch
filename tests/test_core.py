@@ -82,6 +82,77 @@ class TestMogi(unittest.TestCase):
         np.testing.assert_allclose(b, -3 * a)
 
 
+class TestOkada(unittest.TestCase):
+    """Okada (1985, BSSA 75:1135, doi:10.1785/BSSA0750041135) Table 2 check list, p. 1149, lambda = mu (nu = 0.25),
+    L = 3, W = 2, unit dislocation. Values as printed (4 significant digits); cross-checked against the check list in
+    F. Beauducel's okada85_checklist.m (github.com/IPGP/deformation-lib)."""
+    TABLE2 = {  # case: (x, y, d, dip), {type: (ux, uy, uz)}
+        2: ((2, 3, 4, 70), {"strike": (-8.689e-3, -4.298e-3, -2.747e-3), "dip": (-4.682e-3, -3.527e-2, -3.564e-2),
+                            "tensile": (-2.660e-4, +1.056e-2, +3.214e-3)}),
+        3: ((0, 0, 4, 90), {"strike": (0.0, +5.253e-3, 0.0), "dip": (0.0, 0.0, 0.0),
+                            "tensile": (+1.223e-2, 0.0, -1.606e-2)}),
+        4: ((0, 0, 4, -90), {"strike": (0.0, -1.303e-3, 0.0), "dip": (0.0, 0.0, 0.0),
+                             "tensile": (+3.507e-3, 0.0, -7.740e-3)}),
+    }
+    UNIT = {"strike": (1, 0, 0), "dip": (0, 1, 0), "tensile": (0, 0, 1)}
+
+    def test_table2_check_list(self):
+        from okada import okada85
+        for case, ((x, y, d, dip), rows) in self.TABLE2.items():
+            for kind, ref in rows.items():
+                got = okada85(x, y, d, dip, 3.0, 2.0, *self.UNIT[kind], nu=0.25)
+                for g, r in zip(got, ref):
+                    # printed to 4 significant digits: half a unit in the last digit
+                    tol = 0.5 * 10 ** (np.floor(np.log10(abs(r))) - 3) if r else 1e-9
+                    self.assertAlmostEqual(float(g), r, delta=tol, msg=f"case {case} {kind}")
+
+    def test_geographic_wrapper_reproduces_case2(self):
+        from okada import rect_source
+        L, W, dip, d = 3.0, 2.0, 70.0, 4.0
+        zc = d - W / 2 * np.sin(np.radians(dip))
+        ref = self.TABLE2[2][1]
+        for kind, (ux, uy, uz) in ref.items():
+            s, ds, op = self.UNIT[kind]
+            # strike 90 (x = east, Okada +y = north): centroid at (L/2, W/2 cos dip)
+            e, n, z = rect_source(2.0, 3.0, L / 2, W / 2 * np.cos(np.radians(dip)), zc, L, W, 90.0, dip, s, ds, op)
+            np.testing.assert_allclose([float(e), float(n), float(z)], [ux, uy, uz], rtol=5e-4, atol=6e-7)  # 4 significant digits
+            # strike 0 (x = north, Okada +y = west): observation at N = 2, E = -3
+            e, n, z = rect_source(-3.0, 2.0, -W / 2 * np.cos(np.radians(dip)), L / 2, zc, L, W, 0.0, dip, s, ds, op)
+            np.testing.assert_allclose([float(n), float(-e), float(z)], [ux, uy, uz], rtol=5e-4, atol=6e-7)  # 4 significant digits
+
+    def test_small_sill_is_a_horizontal_point_crack(self):
+        # horizontal tensile point source: u = 3 dV d^2 (x, y, d) / (2 pi R^5)  (Okada 1985 eq. 4-6 with dip = 0)
+        from okada import rect_source
+        a, op, d = 0.05, 1.0, 4.0
+        dv = a * a * op
+        e, n = np.array([0.0, 1.5, 3.0, -2.0]), np.array([0.0, 2.0, -1.0, 4.0])
+        ue, un, uz = rect_source(e, n, 0.0, 0.0, d, a, a, 30.0, 0.0, opening=op)
+        R5 = (e ** 2 + n ** 2 + d ** 2) ** 2.5
+        np.testing.assert_allclose(uz, 3 * dv * d ** 3 / (2 * np.pi * R5), rtol=1e-3)
+        np.testing.assert_allclose(ue, 3 * dv * d ** 2 * e / (2 * np.pi * R5), rtol=1e-3, atol=1e-12)
+        np.testing.assert_allclose(un, 3 * dv * d ** 2 * n / (2 * np.pi * R5), rtol=1e-3, atol=1e-12)
+
+    def test_sill_uplift_volume_equals_opening_volume(self):
+        # for a horizontal tensile crack the surface uplift integrates to the crack volume, for any nu
+        from okada import rect_source
+        g = np.linspace(-60, 60, 1201)
+        e, n = np.meshgrid(g, g)
+        _, _, uz = rect_source(e, n, 0.0, 0.0, 3.0, 4.0, 2.0, 0.0, 0.0, opening=1.0, nu=0.3)
+        vol = uz.sum() * (g[1] - g[0]) ** 2
+        tail = 8.0 * 3.0 / 60.0 * 0.5   # crude bound of what lies beyond 60 km (point-crack tail ~ 8*d/(r_max) / 2)
+        self.assertAlmostEqual(vol / 8.0, 1.0, delta=tail / 8.0 + 0.01)
+
+    def test_vertical_dike_symmetry(self):
+        from okada import rect_source
+        e = np.array([1.0, -1.0, 2.5, -2.5])
+        n = np.array([0.7, 0.7, -1.2, -1.2])
+        ue, un, uz = rect_source(e, n, 0.0, 0.0, 2.0, 5.0, 3.0, 0.0, 90.0, opening=1.0)
+        np.testing.assert_allclose(uz[0], uz[1], rtol=1e-12)          # uplift symmetric about the dike plane
+        np.testing.assert_allclose(ue[0], -ue[1], rtol=1e-12)         # opening pushes the two sides apart
+        self.assertGreater(float(ue[0]), 0)
+        np.testing.assert_allclose(un[2], un[3], rtol=1e-12)
+
+
 class TestRateFitting(unittest.TestCase):
     def series(self, rate_u=-16.4, n_days=1500, noise=3.0, seed=1):
         rng = np.random.default_rng(seed)
