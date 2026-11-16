@@ -10,11 +10,15 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
 
 **Main findings so far**
 - Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source near −22.46 E, 63.87 N at about 4 km depth.
-  Splitting the radar into east and up motion rules out a flat sill and favours a compact source. With that source
-  the volume accumulated by 21 Jul 2026 is 32.9-43.7 Mm³, above the Icelandic Met Office's 28.3 Mm³ (27.5-29.1).
+  Splitting the radar into east and up motion rules out a flat sill and favours a compact source, independently
+  confirming Parks et al. (2025), who also preferred a point source. With that source the volume accumulated by
+  21 Jul 2026 is 32.9-43.7 Mm³, above the Icelandic Met Office's 28.3 Mm³ (27.5-29.1).
 - With a dike added at each event, the volume each eruption drained from the source follows the published losses
-  for 8 of 10 events (ratio 0.89-1.33, typically 1.2), a factor similar to that of the accumulated volume. Both point
-  to a difference in the source model rather than in the data.
+  for 8 of 10 events (ratio 0.89-1.33, typically 1.2), a factor similar to that of the accumulated volume.
+- The ~1.2 factor is **not** a source-model difference: the published series also uses a Mogi source at 4 km at
+  almost the same place, and with exactly that source our SENG series gives 34.7 Mm³ on 21 Jul 2026 (1.23 x IMO).
+  The cause lies in the data side (SENG-only conversion and NGL stations against IMO's own GNSS network) and is
+  not yet identified.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -115,7 +119,10 @@ earthquakes of the first 24 h (top 0 km for eruptions, 1 km otherwise, bottom 4 
 - Events 3 (Jan 2024) and 10 (Apr 2025) do not fit one uniform dike (χ²/dof 297 and 93) and are left out.
 - The dike volumes are poorly constrained by 3-5 stations and are not reported as results.
 - The typical ratio of about 1.2 is similar to the accumulated-volume difference (32.9-43.7 against 28.3 Mm³, a
-  factor of 1.16-1.54), so both plausibly come from the same source-model difference.
+  factor of 1.16-1.54). It is not explained by the source model: Parks et al. (2025) use a Mogi source at 4 km
+  (−22.454 E, 63.869 N), and that same source applied to our SENG series gives 34.7 Mm³ on 21 Jul 2026, 1.23 times
+  IMO's 28.3 (`imo_volume_comparison.csv`, column `parks2025`). The offset is therefore on the data side; the
+  cause is open (see Next steps).
 
 **Correlated radar noise (`scripts/joint_covariance.py`, `docs/data/joint_covariance.csv`,
 `docs/data/insar_covariance.json`).** The joint fits above treat the radar blocks as independent. Here an exponential
@@ -289,14 +296,16 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
 
 ## Next steps
 
-1. Done 2026-11-16: radar in the fit narrows the source to 4-5 km depth; a 6 x 2 km sill fits better than a point
-   source. Open: the 12-25 % track disagreement, a spatially correlated InSAR covariance, and Okada dikes for the
-   event losses.
+1. Done 2026-11-16: radar in the fit narrows the source to 4-5 km depth; correlated InSAR covariance added; the
+   east/up test rules out a flat sill (the sill's lower χ² in the joint fit was misleading) and explains the track
+   disagreement as a single-look depth-volume trade-off.
 2. Done 2026-11-16: Okada dikes give event losses consistent with the published pattern (about 1.2 times larger);
    events 3 and 10 need more than one uniform dike.
-3. Find out why the Aug 2025-Oct 2026 interval fits poorly with one Mogi source (χ²/dof 30).
-4. Hellisheiði: the remaining ~2 mm/yr against the published Sentinel-1 map; EGMS for 2019-2023.
-5. Automatic daily update (NGL rapid series + Quakes API) that appends to the volume and rate series.
+3. Find out why the same Mogi source as Parks et al. (2025) gives volumes ~1.2 times theirs: fit the volume with
+   their fixed source to every open GNSS station (not SENG alone) and compare episode by episode with their Fig. 6.
+4. Find out why the Aug 2025-Oct 2026 interval fits poorly with one Mogi source (χ²/dof 30).
+5. Hellisheiði: the remaining ~2 mm/yr against the published Sentinel-1 map; EGMS for 2019-2023.
+6. Automatic daily update (NGL rapid series + Quakes API) that appends to the volume and rate series.
 
 ## Sources
 

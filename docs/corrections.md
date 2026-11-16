@@ -5,6 +5,22 @@ Numbers come from the files named; rerun the scripts listed in [method.md](metho
 
 ## 2026-11-16
 
+### "1.2 times the published volumes = a source-model difference" was wrong
+
+**Was (8412fd0, README and private draft):** our absolute volumes (accumulated and per event) are about 1.2 times the
+published ones, "pointing to a difference in the source model rather than in the data"; the draft also said IMO's
+volume model is not public.
+
+**Now:** Parks et al. (2025, EPSL 658:119324, Sect. 3.2 and Fig. 6) describe the model: the published volume series
+is IMO's automated GNSS-only (24 h solutions) inversion with a Mogi point source fixed at 4 km depth at −22.454 E,
+63.869 N; a 4.35 km sill was run too, and the Mogi source was preferred because the sill overestimated the vertical
+displacement. Applying exactly that source to our SENG series gives 34.73 Mm³ on 21 Jul 2026
+(`imo_volume_comparison.csv`, column `parks2025`), 1.23 times IMO's 28.3. The same source model therefore still gives
+the ~1.2 factor, so the offset lies on the data side (SENG-only conversion and NGL solutions against IMO's network,
+which includes stations near the inflation centre such as SKSH that NGL does not serve). The cause is not yet
+identified. Our east/up result (a compact source fits, a flat sill does not) is an independent confirmation of
+Parks et al.'s choice, not a new finding.
+
 ### Hellisheiði "mismatch": a definition difference, not a measurement difference
 
 **Was:** "−14.6 mm/yr LOS vs published 24-26 mm/yr: lower, ~60 % of the published peak … not separated" (README §C,
