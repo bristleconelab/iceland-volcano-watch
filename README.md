@@ -9,10 +9,10 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
 - how fast the Hengill and Svartsengi geothermal fields are sinking.
 
 **Main findings so far**
-- Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source at 3.75-4.25 km depth (GPS alone allowed
-  about 3.25-4.75 km). With that source our recharge volumes come out **larger** than the Icelandic Met Office's:
-  29.7-36.3 Mm³ (32.9 at the best-fitting 4.0 km) against IMO 28.3 Mm³ (27.5-29.1) on 21 Jul 2026. They agree only
-  at the shallow end of the range.
+- Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source near −22.46 E, 63.87 N at 4-5 km depth, and the
+  recharge volume then depends mainly on the source **shape**. On 21 Jul 2026: 29.7-36.3 Mm³ with a point (Mogi)
+  source, 26.4-32.4 Mm³ with the better-fitting 6 x 2 km horizontal sill. The Icelandic Met Office's 28.3 Mm³
+  (27.5-29.1) lies inside the combined range.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -72,6 +72,19 @@ points per window, are fitted together with the GPS displacements over the same 
   volume changes that differ between the two tracks by 4-48 % (Dec 2024-Mar 2025: 20.1 against 13.6 Mm³).
 - The joint source lies 1.58 km from SENG instead of 1.29 km. For the SENG volume series this scales the volumes by
   1.02, 1.13 and 1.25 at 3.75, 4.0 and 4.25 km: 29.1 becomes 29.7, 32.9 and 36.3 Mm³ on 21 Jul 2026.
+
+**Sill instead of a point source (`scripts/svartsengi_sill.py`, `docs/data/joint_sill.csv`).** A horizontal Okada
+rectangle (checked against Okada 1985 Table 2 in `tests/test_core.py`) fits better than the Mogi source in four of five
+windows (χ²/dof 0.99 / 5.33 / 4.37 / 2.25 against 1.86 / 5.80 / 4.81 / 2.28; the 2026 window is worse, 2.24 against
+1.99).
+- Best shape in every window: 6 x 2 km, long axis N45-60E, centroid 4.5-5.75 km deep. The grid also offered 8 x 8,
+  10 x 5 and 9 x 3 km; these were not chosen. The centroid was searched only on a 3 x 3 grid around the Mogi position.
+- Volume change is 3-15 % smaller than with the Mogi source (e.g. 15.0 against 17.4 Mm³ for Apr-Jul 2025).
+- The two tracks agree better but not fully: ascending against descending 15.4 / 12.3, 16.9 / 13.8 and 13.1 / 11.6 Mm³
+  (Mogi: 20.1 / 13.6, 20.2 / 15.2, 14.5 / 14.0). The remaining 12-25 % points to signal neither model contains
+  (horizontal motion, atmosphere, nearby geothermal subsidence); not resolved.
+- Applied to the SENG volume series, the sill geometries scale the volumes by 0.91-1.11: 29.1 becomes 26.4-32.4 Mm³
+  on 21 Jul 2026.
 
 **Uncertainty of the volumes.** SENG's sensitivity to the source is 18.1 / 14.4 / 9.5 mm per Mm³ at 3.25 / 3.75 /
 4.75 km depth. The same 450 mm of uplift is therefore 24.8, 31.4 or 47.3 Mm³ (`volume_sensitivity_source.csv`).
@@ -226,8 +239,9 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
 
 ## Next steps
 
-1. Done 2026-11-16: radar in the Mogi fit narrows depth to 3.75-4.25 km; the two tracks still disagree by up to
-   48 % in volume change. Next: a sill or a two-source model, and a spatially correlated InSAR covariance.
+1. Done 2026-11-16: radar in the fit narrows the source to 4-5 km depth; a 6 x 2 km sill fits better than a point
+   source. Open: the 12-25 % track disagreement, a spatially correlated InSAR covariance, and Okada dikes for the
+   event losses.
 2. Model the dikes (Okada) or estimate losses from stations away from them; the single-station loss is not validated.
 3. Find out why the Aug 2025-Oct 2026 interval fits poorly with one Mogi source (χ²/dof 30).
 4. Hellisheiði: the remaining ~2 mm/yr against the published Sentinel-1 map; EGMS for 2019-2023.
