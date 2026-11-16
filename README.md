@@ -199,8 +199,12 @@ GPS + radar with the correlated InSAR covariance in each window.
   best line in the five windows.
 - A wider search (`scripts/elongated_centre_check.py`, `docs/data/elongated_centre_check.csv`; centre ±1.4 km,
   strikes N30-105E) finds the same centre, strike, depth and volumes in all three two-track windows.
-- The line does not fit everything: in the up field of Apr-Jul 2025 an uplift lobe of up to ~15 mm west-south-west
-  of the source remains with both models (Fig. 1c below), and the line now over-predicts at SENG by about 10 mm.
+- The line does not fit everything: in the up field of Apr-Jul 2025 (peak uplift ~200 mm) an uplift lobe
+  west-south-west of the source remains with both models, up to 46 mm with the point source and 34 mm with the 4 km
+  line (Fig. 1 below), and the line over-predicts at SENG by about 17 mm (point source: 2 mm).
+- GNSS and radar agree at the stations (`scripts/gnss_insar_consistency.py`, `docs/data/gnss_insar_consistency.csv`):
+  the line-of-sight difference SENG minus GEVK or AUSV from InSAR is 0.95 times the GNSS one (median of 11 track
+  windows; 0.70-1.16). The station dependence is therefore a property of the model, not of a faulty station.
 - Not tested: an exact spheroid, a dipping body, or a time-varying shape; the 2026 window has the ascending track only.
 
 ![up field and residuals](docs/img/paper/fig1_up_field_residuals.png)

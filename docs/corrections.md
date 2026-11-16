@@ -5,6 +5,15 @@ Numbers come from the files named; rerun the scripts listed in [method.md](metho
 
 ## 2026-11-16
 
+### Residual uplift lobe: "up to ~15 mm" was a saturated colour scale
+
+**Was (523ccf6, README):** "an uplift lobe of up to ~15 mm west-south-west of the source remains with both models,
+and the line now over-predicts at SENG by about 10 mm". Both numbers were read off Fig. 1, whose residual colour scale
+stopped at ±15 mm.
+
+**Now:** computed from the residuals: the lobe reaches 46 mm with the point source and 34 mm with the 4 km line
+(peak uplift ~200 mm), and the line over-predicts at SENG by 17 mm (point source 2 mm). The figure scale is now ±40 mm.
+
 ### "1.2 times the published volumes = a source-model difference" was wrong
 
 **Was (8412fd0, README and private draft):** our absolute volumes (accumulated and per event) are about 1.2 times the

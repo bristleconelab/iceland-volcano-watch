@@ -85,8 +85,8 @@ def fig1(gn):
     fig, axs = plt.subplots(1, 3, figsize=(175 * MM, 66 * MM), sharey=True, constrained_layout=True)
     box = (-22.62, -22.28, 63.80, 63.95)
     panels = ((df.u.values, "a  Up, 9 Apr-10 Jul 2025", "viridis", (0, np.nanpercentile(df.u, 99))),
-              (r_pt, f"b  Point source, rms {rms_pt:.1f} mm", "RdBu_r", (-15, 15)),
-              (r_ln, f"c  4 km line N60E, rms {rms_ln:.1f} mm", "RdBu_r", (-15, 15)))
+              (r_pt, f"b  Point source, rms {rms_pt:.1f} mm", "RdBu_r", (-40, 40)),
+              (r_ln, f"c  4 km line N60E, rms {rms_ln:.1f} mm", "RdBu_r", (-40, 40)))
     ix = np.floor((df.lon.values + 22.75) / 0.01 + 1e-6).astype(int)
     iy = np.floor((df.lat.values - 63.80) / 0.01 + 1e-6).astype(int)
     xe = -22.75 + 0.01 * np.arange(ix.max() + 2)
