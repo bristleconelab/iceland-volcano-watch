@@ -1,11 +1,23 @@
-# iceland-volcano-watch
+# Iceland Volcano Watch
 
-An open, reproducible monitor of Reykjanes Peninsula volcanism and geothermal deformation, built from free data:
-Nevada Geodetic Laboratory (NGL) GNSS, the Icelandic Met Office (IMO) Quakes API and COMET LiCSAR Sentinel-1
-interferograms. It measures:
-- the Svartsengi magma domain (inflation, Mogi source, volume per cycle);
-- the seismicity of the Sundhnúkur dikes;
-- subsidence of the Hengill and Svartsengi geothermal fields.
+Open, reproducible measurements of the 2023-2026 volcanic crisis on Iceland's Reykjanes Peninsula, made only from
+free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met Office earthquake catalogue.
+
+**What it measures**
+- how much magma volume builds up under Svartsengi between eruptions, and how fast it flows in;
+- the earthquakes of the Sundhnúkur dikes;
+- how fast the Hengill and Svartsengi geothermal fields are sinking.
+
+**Main findings so far**
+- Recharge volumes from GNSS agree with the Icelandic Met Office within the uncertainty of the source depth
+  (for example 29.1 Mm³ here against IMO 28.3 Mm³ on 21 Jul 2026; range 24.6-41.6 Mm³ over plausible source depths).
+- From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
+  32 Mm³ without one, so that pattern no longer holds.
+- The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
+  pixel with a plate model removed, against an area statistic). With the same definition the maps agree within
+  about 2 mm/yr.
+- A copy of the COSEISMIQ Hengill catalogue on Zenodo is damaged (columns swapped, minus signs and time precision
+  lost). The original authors were notified on 15 Nov 2026.
 
 > **Status (2026-11-16): four pilots, run end to end, plus an external review folded in.** This repository does
 > measurement and retrospective statistics only. It makes **no eruption forecasts**; for hazard information see the
@@ -193,8 +205,7 @@ written by a script in `scripts/`.
 | Zenodo 10.5281/zenodo.16311162 | CC BY 4.0 | University of Campania 2025 |
 | Published figures (Juncu et al. 2017 Fig. 7; Ducrocq et al. 2021 Fig. 5) | read by colour into a few summary numbers; the figures and PDFs are not redistributed | cited |
 
-The repository holds only derived tables and figures. Raw downloads stay in `data/` (git-ignored). The code has no
-licence file yet.
+The repository holds only derived tables and figures. Raw downloads stay in `data/` (git-ignored).
 
 ## Next steps
 
@@ -234,6 +245,17 @@ licence file yet.
 - Lazecký, M. et al. 2020. LiCSAR: an automatic InSAR tool for measuring and monitoring tectonic and volcanic
   activity. *Remote Sensing* 12: 2430. doi:10.3390/rs12152430.
 - Icelandic Met Office news, 2025-2026 (en.vedur.is); IMO Quakes API.
+
+## How to cite
+
+Ismoilov, O. (2026). Iceland Volcano Watch: open, reproducible measurements of Reykjanes volcanism from free data.
+https://github.com/ismoilovdevml/iceland-volcano-watch
+
+## How this was made
+
+The analysis code was written largely with an AI coding assistant (Claude, Anthropic) under the author's direction.
+Every number is produced by a script in this repository, tested on synthetic cases with known answers, and checked
+against published values where they exist; corrections are logged in [docs/corrections.md](docs/corrections.md).
 
 ## Licence
 
