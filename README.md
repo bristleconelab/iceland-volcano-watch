@@ -14,14 +14,21 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
   confirming Parks et al. (2025), who also preferred a point source.
 - With a dike added at each event, the volume each eruption drained from the source follows the published losses
   for 8 of 10 events (ratio 0.89-1.33, typically 1.2), a factor similar to that of the accumulated volume.
-- **The volume depends on which GPS stations are used, by up to a factor of two.** With IMO's own model (a point
-  source fixed at 4 km, Parks et al. 2025) the volume accumulated by 21 Jul 2026 is 34.7 Mm³ from SENG alone,
-  19.6-28.0 Mm³ from any multi-station subset of the five open stations, and 18-22 Mm³ from AUSV or GEVK alone.
-  IMO's 28.3 Mm³ (27.5-29.1) lies at the top of the multi-station range. SENG sits on the north-east axis of the
-  elongated uplift, which a point source cannot reproduce (χ²/dof 14-22), so it overstates the volume. The earlier
-  "1.2 times IMO" came from using SENG alone, not from a different model. A source elongated along the crater row
-  (N60E, about 3-4 km long) fits the radar better and brings the stations within a factor of 1.1-1.4; the
-  five-station volume is then 21-25 Mm³ (21-30 over all windows), at or below IMO's figure.
+- **With IMO's own model, the volume depends on which open GPS stations are used.** IMO's series uses a point
+  source fixed at 4 km (Parks et al. 2025). Applied to the vertical motion of the five open NGL stations, the volume
+  accumulated from 22 Jul 2025 to 21 Jul 2026 is 34.4-34.7 Mm³ from SENG alone, 18.1-18.7 from AUSV and 22.0 from
+  GEVK alone, 23.8 from all five and 19.6-28.0 from any four. IMO's 28.3 (27.5-29.1), from its larger network, lies
+  inside this spread. The earlier "1.2 times IMO" came from converting SENG alone.
+- **Why the stations differ.** Radar "virtual stations" (`scripts/implied_volume.py`): the volume a station would
+  report varies smoothly with azimuth around the source, by ±11-22 % on a 2.5-4.5 km ring, highest along N54-62E
+  (the crater row). SENG lies near the high axis; AUSV and GEVK, both in Grindavík, in the low sector. In Apr-Jul
+  2025, after the 1 Apr 2025 dike beneath Grindavík, that sector dips further. Over 3-month windows GNSS and the
+  radar at the same place differ by up to 30 % (SENG) and 50 % (GEVK), so station-local motion adds to the source
+  geometry.
+- The elongation itself is known: Parks et al. (2025) note it, Lanzi et al. (EGU26-12710) fit ellipsoidal sources
+  (about 3 km deep, 15-18 Mm³ against spheres at 3.9 km, 18-21 Mm³, since March 2024), and Sigmundsson et al.
+  (IAVCEI 2025) use a horizontal spheroid. Our line-of-point-sources fits below agree in direction but are a
+  kinematic stand-in, not a pressurised cavity; fits with a pressurised prolate cavity (CDM) are in progress.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -206,6 +213,14 @@ GPS + radar with the correlated InSAR covariance in each window.
   the line-of-sight difference SENG minus GEVK or AUSV from InSAR is 0.95 times the GNSS one (median of 11 track
   windows; 0.70-1.16). The station dependence is therefore a property of the model, not of a faulty station.
 - Not tested: an exact spheroid, a dipping body, or a time-varying shape; the 2026 window has the ascending track only.
+- **Caveats from an independent review (2026-11-16).** (i) The line is not a pressurised cavity: its volume is the
+  sum of nine spheres' cavity changes, not that of an elongated chamber. (ii) The east/up test favours the point
+  source (0.94-1.04) over the lines (0.80-1.02) and neglects north motion in the data only; it rejects flat sills
+  but does not support the line. (iii) The 2026 window, the only one inside the IMO comparison period with new
+  data (ascending only), gives a five-station volume of 26.3-31.7 Mm³ and SENG/AUSV 1.4-1.9 with any line length,
+  i.e. it agrees with IMO and does not bring the stations together; the 21.0-24.6 Mm³ above use earlier windows and
+  L = 3-6 km only. (iv) The 3-component network fits mix corrected (SENG, NYLA) and uncorrected horizontal plate
+  motion; use the vertical-only numbers. (v) Δχ² is not calibrated because χ²/dof < 1 in most windows.
 
 ![up field and residuals](docs/img/paper/fig1_up_field_residuals.png)
 
@@ -379,6 +394,13 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
 6. Automatic daily update (NGL rapid series + Quakes API) that appends to the volume and rate series.
 
 ## Sources
+
+- Lanzi, C. et al. 2026. EGU26-12710, doi:10.5194/egusphere-egu26-12710 (sphere, sill and ellipsoid sources for
+  Svartsengi; IAVCEI 2025 abstract 1-5-25).
+- Sigmundsson, F. et al. 2025. IAVCEI Scientific Assembly abstract 1-8-6 (horizontal spheroid magma domain).
+- De Pascale, G. P. et al. 2024. *GRL* 51, doi:10.1029/2024GL110150 (graben formation in Grindavík).
+- Nikkhoo, M., Walter, T. R., Lundgren, P. R. and Prats-Iraola, P. 2017. Compound dislocation models (CDMs) for
+  volcano deformation analyses. *GJI* 208: 877-894. doi:10.1093/gji/ggw427 (code ported in `scripts/cdm.py`, MIT).
 
 - Parks, M. et al. 2025. 2023-2024 inflation-deflation cycles at Svartsengi and repeated dike injections and
   eruptions at the Sundhnúkur crater row, Reykjanes Peninsula, Iceland. *EPSL* 658: 119324.
