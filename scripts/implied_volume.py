@@ -133,7 +133,7 @@ def main():
 
 
 def plot(fields, ring_df, st_df, gc):
-    key = "I4 2025-08-12"
+    key = "I3 2025-04-08"
     df = fields[key]
     mm = 1 / 25.4
     fig, axs = plt.subplots(1, 2, figsize=(175 * mm, 72 * mm), constrained_layout=True,
@@ -162,7 +162,7 @@ def plot(fields, ring_df, st_df, gc):
     ax.set_ylim(63.81, 63.93)
     ax.set_xlabel("Longitude (°E)")
     ax.set_ylabel("Latitude (°N)")
-    ax.set_title("a  Aug-Nov 2025, IMO point source", loc="left", fontsize=7)
+    ax.set_title("a  Apr-Jul 2025, IMO point source", loc="left", fontsize=7)
     ax = axs[1]
     import elongated_source as E
     import implied_volume_harmonics as IH
@@ -179,7 +179,8 @@ def plot(fields, ring_df, st_df, gc):
         f = fields[k]
         ring = f[(f.r > RING[0]) & (f.r < RING[1])]
         mean, curve = two_harmonic(ring.az.values, ring.V.values)
-        ax.plot(ring.az, ring.V / mean, ".", ms=2.5, color=col, alpha=0.6, label=k.split()[0] + " " + k.split()[1][:7])
+        names = {"I2 2024-12-12": "Dec 2024-Mar 2025", "I3 2025-04-08": "Apr-Jul 2025", "I4 2025-08-12": "Aug-Nov 2025"}
+        ax.plot(ring.az, ring.V / mean, ".", ms=2.5, color=col, alpha=0.6, label=names[k])
         ax.plot(tt, curve / mean, "-", color=col, lw=1.0)
     es = pd.read_csv(DATA / "elongated_source.csv").query("window == 'I3 2025-04-08' and L_km == 6.0").iloc[0]
     f = fields["I3 2025-04-08"]
@@ -187,7 +188,7 @@ def plot(fields, ring_df, st_df, gc):
     Vm = IH.process(f, E.line_greens(np.asarray(x), np.asarray(y), es.depth_km, 6.0, es.strike)[2] * es.dv_mm3)
     ringm = ((f.r > RING[0]) & (f.r < RING[1])).values
     mean_m, curve_m = two_harmonic(f.az.values[ringm], Vm[ringm])
-    ax.plot(tt, curve_m / mean_m, "--", color="#1f6fb4", lw=1.1, label="6 km source, I3 (model)")
+    ax.plot(tt, curve_m / mean_m, "--", color="#1f6fb4", lw=1.1, label="6 km source, Apr-Jul 2025 (model)")
     for s in ("AUSV", "GEVK"):
         az = st_df[st_df.site == s].azimuth.iloc[0]
         ax.axvline(az, color="#222222", lw=0.6, ls="--")
@@ -196,8 +197,8 @@ def plot(fields, ring_df, st_df, gc):
     ax.set_ylim(0.55, 1.45)
     ax.set_xticks(range(0, 361, 60))
     ax.set_xlabel("Azimuth from source (°)")
-    ax.set_ylabel("Implied volume / ring mean")
-    ax.legend(frameon=False, fontsize=6, loc="lower left", markerscale=3)
+    ax.set_ylabel("3-month implied volume / ring mean")
+    ax.legend(frameon=True, framealpha=0.9, edgecolor="none", fontsize=5.5, loc="lower right", markerscale=3)
     ax.set_title("b  Ring 2.5-4.5 km; lines: first + second harmonic", loc="left", fontsize=7)
     IMG.mkdir(parents=True, exist_ok=True)
     fig.savefig(IMG / "fig_implied_volume.png", dpi=300)

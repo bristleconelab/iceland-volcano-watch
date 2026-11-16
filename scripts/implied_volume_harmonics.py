@@ -5,7 +5,9 @@ a first harmonic (cos theta). Here, for the windows with both tracks, the ring v
 mean + A1 cos(theta - t1) + A2 cos 2(theta - t2), for the data and for synthetic up fields of candidate sources at
 their joint-fit geometry and volume, processed the same way (plane beyond 10 km removed, divided by IMO's point-source
 response). Model up fields are taken directly (no east/up decomposition), which is adequate for the harmonic shape.
-Sources: point (joint fit), line of point sources L = 6 km, pressurised prolate CDM (cdm_source.csv).
+Sources: point (joint fit), lines of point sources L = 4 and 6 km, pressurised prolate CDM (cdm_source.csv).
+Rings 2.0-4.0, 2.5-4.5 (main) and 3.0-5.0 km; observed amplitudes get a 1-sigma spread from 500 bootstrap resamples
+of the ring blocks (blocks are spatially correlated, so this is a lower bound).
     python -I scripts/implied_volume_harmonics.py -> docs/data/implied_volume_harmonics.csv
 """
 import sys
@@ -37,6 +39,17 @@ def harmonics(az, v):
                 A2_pct=round(100 * a2, 1), A2_axis=round(float(t2), 0), rms=round(rms, 2))
 
 
+def boot(az, v, n=500, seed=3):
+    rng = np.random.default_rng(seed)
+    a1, a2 = [], []
+    for _ in range(n):
+        k = rng.integers(0, len(v), len(v))
+        h = harmonics(az[k], v[k])
+        a1.append(h["A1_pct"])
+        a2.append(h["A2_pct"])
+    return round(float(np.std(a1)), 1), round(float(np.std(a2)), 1)
+
+
 def process(df, u):
     far = df.r.values > 10
     A = np.c_[np.ones(far.sum()), df.x.values[far], df.y.values[far]]
@@ -55,24 +68,32 @@ def main():
             continue
         key = f"{w['interval']} {w['start']}"
         df = IV.up_field(names)
-        ring = (df.r > IV.RING[0]) & (df.r < IV.RING[1])
-        rows.append(dict(window=key, field="observed", **harmonics(df.az[ring].values, df.V[ring].values)))
         models = []
-        for L in (0.0, 6.0):
+        for L in (0.0, 4.0, 6.0):
             r = es[(es.window == key) & (es.L_km == L)].iloc[0]
-            models.append((f"point (joint)" if L == 0 else "line L=6", "line",
+            models.append(("point (joint)" if L == 0 else f"line L={L:g}", "line",
                            dict(lon=r.lon, lat=r.lat, depth_km=r.depth_km, L=L, strike=r.strike), r.dv_mm3))
         c = cd.loc[key]
         models.append(("pressurised prolate CDM", "cdm", dict(lon=c.lon, lat=c.lat, depth_km=c.depth_km, ax=c.ax_km,
                                                               ay=c.ay_az_km, strike=c.strike), c.dv_mm3))
+        Vm = {}
         for label, kind, p, dv in models:
             x, y = to_local_km(df.lon.values, df.lat.values, p["lon"], p["lat"])
             x, y = np.asarray(x), np.asarray(y)
             gz = (E.line_greens(x, y, p["depth_km"], p["L"], p["strike"])[2] if kind == "line"
                   else C.cdm_greens(x, y, p)[2])
-            V = process(df, gz * dv)
-            rows.append(dict(window=key, field=f"model: {label}", **harmonics(df.az[ring].values, V[ring.values])))
-        print(pd.DataFrame(rows).tail(4).to_string(index=False), flush=True)
+            Vm[label] = process(df, gz * dv)
+        for ring_km in ((2.0, 4.0), (2.5, 4.5), (3.0, 5.0)):
+            ring = ((df.r > ring_km[0]) & (df.r < ring_km[1])).values
+            az = df.az.values[ring]
+            h = harmonics(az, df.V.values[ring])
+            s1, s2 = boot(az, df.V.values[ring])
+            rows.append(dict(window=key, ring_km=f"{ring_km[0]:g}-{ring_km[1]:g}", field="observed", n_blocks=int(ring.sum()),
+                             **h, A1_sigma=s1, A2_sigma=s2))
+            for label, V in Vm.items():
+                rows.append(dict(window=key, ring_km=f"{ring_km[0]:g}-{ring_km[1]:g}", field=f"model: {label}",
+                                 n_blocks=int(ring.sum()), **harmonics(az, V[ring])))
+        print(pd.DataFrame(rows).tail(5 * 3).to_string(index=False), flush=True)
     pd.DataFrame(rows).to_csv(DATA / "implied_volume_harmonics.csv", index=False)
 
 

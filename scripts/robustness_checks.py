@@ -4,7 +4,7 @@
    5-day means (network_volume.py) against one-sided 15-day linear fits (implied_volume.local_position).
 2. Residual uplift lobe west-south-west of the source in the Apr-Jul 2025 up field (paper_figures.py Fig. 1): maximum
    and 90th percentile of the residual in the box 22.58-22.46 W, 63.84-63.875 N, and the residual at SENG's block,
-   for the point source, the 4 km line and the pressurised prolate CDM (each at its joint-fit geometry, volume refitted
+   for the point source, the 4 and 6 km lines and the pressurised prolate CDM (each at its joint-fit geometry, volume refitted
    to the up field with offset and plane).
     python -I scripts/robustness_checks.py -> docs/data/robustness_endpoints.csv, docs/data/robustness_residual_lobe.csv
 """
@@ -54,7 +54,7 @@ def lobe():
     cd = pd.read_csv(DATA / "cdm_source.csv").set_index("window").loc["I3 2025-04-08"]
     rows = []
     for label, p in (("point (joint)", PF.geom("I3 2025-04-08", 0.0)), ("line L=4", PF.geom("I3 2025-04-08", 4.0)),
-                     ("pressurised prolate CDM", None)):
+                     ("line L=6", PF.geom("I3 2025-04-08", 6.0)), ("pressurised prolate CDM", None)):
         if p is None:
             q = dict(lon=cd.lon, lat=cd.lat, depth_km=cd.depth_km, ax=cd.ax_km, ay=cd.ay_az_km, strike=cd.strike)
             x, y = to_local_km(df.lon.values, df.lat.values, q["lon"], q["lat"])

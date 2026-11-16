@@ -130,10 +130,10 @@ def fig2():
     ln = ln[ln.window.isin(TWO_TRACK)]
     rows = (("SENG alone", "SENG", "seng_alone"), ("GEVK alone", "GEVK", "gevk_alone"),
             ("AUSV alone", "AUSV", "ausv_alone"), ("Five stations", None, "all5_vertical"))
-    fig, ax = plt.subplots(figsize=(85 * MM, 55 * MM), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(85 * MM, 62 * MM), constrained_layout=True)
     ax.axvspan(imo.imo_lo, imo.imo_hi, color=IMO_C, alpha=0.25, lw=0)
     ax.axvline(imo.imo_mm3, color=IMO_C, lw=0.8)
-    ax.text(imo.imo_mm3 + 0.3, len(rows) - 0.45, "IMO", color=IMO_C, fontsize=6)
+    ax.text(imo.imo_mm3 + 0.3, len(rows) - 0.7, "IMO", color=IMO_C, fontsize=6)
     for i, (lab, site, col) in enumerate(rows):
         yv = len(rows) - 1 - i
         if site:
@@ -153,7 +153,8 @@ def fig2():
     ax.set_yticklabels([r[0] for r in rows][::-1])
     ax.set_xlabel("Cavity volume change, 22 Jul 2025 - 21 Jul 2026 (Mm³)")
     ax.set_xlim(15, 40)
-    ax.legend(frameon=False, loc="center right", fontsize=6)
+    ax.set_ylim(-0.6, len(rows) - 0.4)
+    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.45, -0.28), ncol=2, fontsize=6)
     save(fig, "fig2_volume_by_station_set")
 
 

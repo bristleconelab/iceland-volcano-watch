@@ -9,8 +9,8 @@ Yang et al. (1988) spheroid; it keeps each element compact, so it does not inher
 motion.
 
 Per radar window (same chains, GNSS dates, correlated InSAR covariance and nuisance terms as joint_covariance.py):
-1. Grid: depth 3-6 km (0.25), L in {0, 2, 3, 4, 6, 8} km, strike N0E-N165E (15 deg), centre on a 3 x 3 grid around
-   the best point source; dV and nuisances linear. chi2 with the full InSAR covariance.
+1. Grid: depth 2-6 km (0.25), L in {0, 2, 3, 4, 6, 8} km, strike N0E-N165E (15 deg), centre on a 5 x 5 grid
+   (+-0.016 deg lon, +-0.008 deg lat, about +-0.8 / 0.9 km) around the best point source; dV and nuisances linear. chi2 with the full InSAR covariance.
 2. Station consistency: with each window's best geometry, the volume implied by SENG's vertical alone over the window
    against the joint dV; and on 21 Jul 2026 (from the 22 Jul 2025 post-eruption level, as network_volume.py) SENG
    alone, AUSV alone, GEVK alone and all five stations, against IMO's 28.3 Mm3.
@@ -37,7 +37,7 @@ from ivwlib import linear_velocity, load_events, mogi, to_local_km  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "docs" / "data"
 NPTS = 9
-DEPTHS = np.arange(3.0, 6.01, 0.25)
+DEPTHS = np.arange(2.0, 6.01, 0.25)
 LENGTHS = (0.0, 2.0, 3.0, 4.0, 6.0, 8.0)
 STRIKES = np.arange(0, 180, 15)
 SENG = JC.SENG
@@ -109,8 +109,8 @@ def window_data(w, gn, bg):
 def grid(wd):
     obs, ins, geo, Ls, pm = wd["obs"], wd["ins"], wd["geo"], wd["Ls"], wd["pm"]
     d = JC.data_vec(obs, ins)
-    lons = pm["lon"] + np.array([-0.008, 0.0, 0.008])
-    lats = pm["lat"] + np.array([-0.004, 0.0, 0.004])
+    lons = pm["lon"] + np.linspace(-0.016, 0.016, 5)
+    lats = pm["lat"] + np.linspace(-0.008, 0.008, 5)
     best = {}
     for L in LENGTHS:
         for st in (STRIKES if L > 0 else [0]):
