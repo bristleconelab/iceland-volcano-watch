@@ -28,7 +28,13 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
 - The elongation itself is known: Parks et al. (2025) note it, Lanzi et al. (EGU26-12710) fit ellipsoidal sources
   (about 3 km deep, 15-18 Mm³ against spheres at 3.9 km, 18-21 Mm³, since March 2024), and Sigmundsson et al.
   (IAVCEI 2025) use a horizontal spheroid. Our line-of-point-sources fits below agree in direction but are a
-  kinematic stand-in, not a pressurised cavity; fits with a pressurised prolate cavity (CDM) are in progress.
+  kinematic stand-in, not a pressurised cavity. A pressurised prolate cavity (compound dislocation model, Nikkhoo
+  et al. 2017; `scripts/cdm_source.py`) also fits the radar far better than a point source (Δχ² 14-409), along
+  N60-75E at 3.25-4.0 km, and brings the five stations to χ²/dof 3-5 (point source 14); its cavity volume from
+  22 Jul 2025 to 21 Jul 2026 is 21.7-25.7 Mm³ (five stations, vertical), below IMO's 28.3, as Lanzi et al. found
+  for ellipsoids against spheres. The east/up test, now done consistently (`scripts/east_up_consistent.py`), rejects
+  flat sills (1.33-1.54) and thin pressurised cylinders (1.15-1.26) but cannot separate a point source (0.90-0.94)
+  from a line of point sources (0.92-0.98): the shape is not resolved, and the volume carries that uncertainty.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -214,9 +220,10 @@ GPS + radar with the correlated InSAR covariance in each window.
   windows; 0.70-1.16). The station dependence is therefore a property of the model, not of a faulty station.
 - Not tested: an exact spheroid, a dipping body, or a time-varying shape; the 2026 window has the ascending track only.
 - **Caveats from an independent review (2026-11-16).** (i) The line is not a pressurised cavity: its volume is the
-  sum of nine spheres' cavity changes, not that of an elongated chamber. (ii) The east/up test favours the point
-  source (0.94-1.04) over the lines (0.80-1.02) and neglects north motion in the data only; it rejects flat sills
-  but does not support the line. (iii) The 2026 window, the only one inside the IMO comparison period with new
+  sum of nine spheres' cavity changes, not that of an elongated chamber. (ii) The first east/up test re-fitted depth
+  per component and neglected north motion in the data only; done consistently (model through the same
+  decomposition, geometry fixed) the north term changes the ratio by 0.01-0.03 and the lines are no worse than the
+  point source (`east_up_consistent.csv`). (iii) The 2026 window, the only one inside the IMO comparison period with new
   data (ascending only), gives a five-station volume of 26.3-31.7 Mm³ and SENG/AUSV 1.4-1.9 with any line length,
   i.e. it agrees with IMO and does not bring the stations together; the 21.0-24.6 Mm³ above use earlier windows and
   L = 3-6 km only. (iv) The 3-component network fits mix corrected (SENG, NYLA) and uncorrected horizontal plate
