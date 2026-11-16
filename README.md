@@ -1,5 +1,7 @@
 # Iceland Volcano Watch
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24288620.svg)](https://doi.org/10.5281/zenodo.24288620)
+
 Open, reproducible measurements of the 2023-2026 volcanic crisis on Iceland's Reykjanes Peninsula, made only from
 free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met Office earthquake catalogue.
 
@@ -451,8 +453,9 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
 
 ## How to cite
 
-Ismoilov, O. (2026). Iceland Volcano Watch: open, reproducible measurements of Reykjanes volcanism from free data.
-https://github.com/ismoilovdevml/iceland-volcano-watch
+Ismoilov, O. (2026). iceland-volcano-watch: open-data analysis of the Svartsengi magma accumulation (GNSS,
+Sentinel-1), version 1.0.0. Zenodo. https://doi.org/10.5281/zenodo.24288621 (all versions:
+https://doi.org/10.5281/zenodo.24288620). Code: https://github.com/ismoilovdevml/iceland-volcano-watch
 
 ## How this was made
 
