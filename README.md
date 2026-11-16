@@ -9,11 +9,12 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
 - how fast the Hengill and Svartsengi geothermal fields are sinking.
 
 **Main findings so far**
-- Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source near −22.46 E, 63.87 N at 4-5.5 km depth. The
-  recharge volume read from the SENG station still depends on the source **shape and the window the geometry comes
-  from**: 24.5-43.7 Mm³ on 21 Jul 2026 across a point source and a 6 x 2 km sill fitted in five windows. The Icelandic
-  Met Office's 28.3 Mm³ (27.5-29.1) lies inside this range; the geometry of the current cycle alone (Apr-Oct 2026, one
-  track) gives 36.7-43.7 Mm³, above IMO.
+- Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source near −22.46 E, 63.87 N at about 4 km depth.
+  Splitting the radar into east and up motion rules out a flat sill and favours a compact source. With that source
+  the volume accumulated by 21 Jul 2026 is 32.9-43.7 Mm³, above the Icelandic Met Office's 28.3 Mm³ (27.5-29.1).
+- With a dike added at each event, the volume each eruption drained from the source follows the published losses
+  for 8 of 10 events (ratio 0.89-1.33, typically 1.2), a factor similar to that of the accumulated volume. Both point
+  to a difference in the source model rather than in the data.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -53,7 +54,7 @@ same convention, so the comparisons below are like with like.
 | Mogi source, 4 inflation intervals Oct 2024-Oct 2026 | −22.444 to −22.472 E, 63.866-63.874 N, best depths 3.50-4.75 km. **χ²/dof = 9.3, 24.5, 19.0, 30.3**: the point source does not fit to within the errors | −22.454 E, 63.869 N, 4 km (Parks et al. 2025); 3-6 km (EGU25) | 0.45-0.95 km from Parks' source horizontally; depth intervals are not formal (see below) |
 | Inflow, first cycle (15 Nov-17 Dec 2023) | 7.0 m³/s (8.4 with Parks' source) | ~7-9 m³/s | consistent |
 | Inflow, cycles Jun 2024-Mar 2025 | 2.0-3.1 m³/s (2.4-3.7 with Parks' source) | 2.4-4 m³/s | consistent, ours at the low end |
-| Volume lost per event (SENG only) | see `event_volume_loss.csv` | Parks et al. 2025 Table 1 | **not validated**: a selection rule fixed in advance (dike seismicity ≥ 3 km from SENG) passes no event; at 2 km, events 3, 4, 8, 9, 10 have ratios −0.26 to 1.22 |
+| Volume lost per event | all GPS stations + an Okada dike per event (`event_dike_losses.csv`): 8 of 10 events within 0.89-1.33 times the published loss; events 3 and 10 do not fit | Parks et al. 2025 Table 1; EGU26-6017 | **consistent in pattern, about 1.2 times larger**; the single-station (SENG) losses without a dike term are not usable |
 | Recharge before events 7-11 | 17.0, 21.2, 18.2, 21.8, 20.8 Mm³ | 17-23 Mm³ ("last five events", EGU26-6017) | consistent, all five inside the range |
 | Accumulated since the 16 Jul 2025 eruption, at 21 Jul / 16 Aug 2026 | 29.1 / 30.2 Mm³ (median source, 3.875 km). Range over source depth 3.50-4.75 km and Parks' source: **24.6-41.6 / 25.5-43.2 Mm³** | IMO 28.3 (27.5-29.1) / 29.1 (28.3-29.9) Mm³, 95 % | consistent within the source-geometry uncertainty; our central value is at or just above IMO's upper bound |
 | SENG uplift, 3 months to 15 Sep / 30 Sep 2026 | 49.2 / 41.1 mm | IMO "about 5 cm" / "about 4 cm" | consistent |
@@ -88,6 +89,34 @@ windows (χ²/dof 0.99 / 5.33 / 4.37 / 2.25 against 1.86 / 5.80 / 4.81 / 2.28; t
 - Applied to the SENG volume series, the sill geometries scale the volumes by 0.91-1.11: 29.1 becomes 26.4-32.4 Mm³
   on 21 Jul 2026.
 
+**Which shape? East and up separately (`scripts/track_hv_check.py`, `docs/data/track_hv_check.csv`).** Where both
+tracks cover the same weeks, ascending and descending are combined into east and up motion (937 blocks for Apr-Jul
+2025), and a source is fitted to each component alone. A correct shape gives the same volume from both.
+- Point source: east/up volume ratio 1.01, 0.94 and 1.04 in the three windows with both tracks.
+- Horizontal sills of 2 x 2, 3 x 3, 4 x 4 and 6 x 2 km: ratio 1.60-1.81 in every window. A flat crack predicts too
+  little horizontal motion for its uplift, so its better χ² above does not mean it is the right shape.
+- The earlier disagreement between tracks (fitted one at a time) comes from one look direction trading depth against
+  volume; with both looks combined the data are consistent within 6 %. Different date spans of the two tracks explain
+  about 9 % of the Dec 2024-Mar 2025 difference and none of the Apr-Jul 2025 one.
+
+**Volume drained by each event (`scripts/event_dike_losses.py`, `docs/data/event_dike_losses.csv`).** For every
+event, the GPS displacement across the event at all stations with data (3-5) is fitted with the deflating point source
+at its joint-fit position and a vertical Okada dike whose centre, strike and length come from the reviewed IMO
+earthquakes of the first 24 h (top 0 km for eruptions, 1 km otherwise, bottom 4 km; 3 and 5 km change the losses by
+< 0.6 Mm³).
+
+| Event | 2 | 4 | 5 | 6 | 7 | 8 | 9 | 11 |
+|---|---|---|---|---|---|---|---|---|
+| Loss, this work (Mm³) | 13.0 | 8.2 | 2.2 | 6.1 | 15.7 | 24.0 | 16.7 | 16.0 |
+| SENG only, no dike | 3.4 | 4.3 | −1.6 | 6.6 | 11.2 | 20.9 | 15.6 | 12.3 |
+| Published | 10.6 | 6.7 | 2.0 | 6.9 | 12.7 | 19.7 | 12.8 | 12.0 |
+| Ratio | 1.23 | 1.22 | 1.12 | 0.89 | 1.23 | 1.22 | 1.31 | 1.33 |
+
+- Events 3 (Jan 2024) and 10 (Apr 2025) do not fit one uniform dike (χ²/dof 297 and 93) and are left out.
+- The dike volumes are poorly constrained by 3-5 stations and are not reported as results.
+- The typical ratio of about 1.2 is similar to the accumulated-volume difference (32.9-43.7 against 28.3 Mm³, a
+  factor of 1.16-1.54), so both plausibly come from the same source-model difference.
+
 **Correlated radar noise (`scripts/joint_covariance.py`, `docs/data/joint_covariance.csv`,
 `docs/data/insar_covariance.json`).** The joint fits above treat the radar blocks as independent. Here an exponential
 covariance s² exp(−r/λ) plus a white nugget is fitted to the residuals more than 12 km from the source of every window
@@ -104,8 +133,8 @@ and track (λ = 0.6-4.1 km, s = 3.3-9.1 mm, nugget 0.6-3.8 mm) and both models a
 | Aug-Nov 2025 | 4.25 km, 13.5 Mm³ | 4.75 km, 12.1 Mm³ | 36.3 / 28.3 Mm³ |
 | Apr-Oct 2026 (ascending only) | 4.75 km, 8.3 Mm³ | 5.5 km, 7.3 Mm³ | 43.7 / 36.7 Mm³ |
 
-IMO's 28.3 Mm³ (27.5-29.1) for 21 Jul 2026 lies inside the 24.5-43.7 Mm³ spread. The radar fixes where the source is,
-but not which shape is right, and the shape decides how much volume one millimetre of uplift at SENG means.
+IMO's 28.3 Mm³ (27.5-29.1) for 21 Jul 2026 lies inside the 24.5-43.7 Mm³ spread of all rows. The east/up test above
+rules out the sill rows; the point-source rows alone give 32.9-43.7 Mm³, above IMO.
 
 **Uncertainty of the volumes.** SENG's sensitivity to the source is 18.1 / 14.4 / 9.5 mm per Mm³ at 3.25 / 3.75 /
 4.75 km depth. The same 450 mm of uplift is therefore 24.8, 31.4 or 47.3 Mm³ (`volume_sensitivity_source.csv`).
@@ -263,7 +292,8 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
 1. Done 2026-11-16: radar in the fit narrows the source to 4-5 km depth; a 6 x 2 km sill fits better than a point
    source. Open: the 12-25 % track disagreement, a spatially correlated InSAR covariance, and Okada dikes for the
    event losses.
-2. Model the dikes (Okada) or estimate losses from stations away from them; the single-station loss is not validated.
+2. Done 2026-11-16: Okada dikes give event losses consistent with the published pattern (about 1.2 times larger);
+   events 3 and 10 need more than one uniform dike.
 3. Find out why the Aug 2025-Oct 2026 interval fits poorly with one Mogi source (χ²/dof 30).
 4. Hellisheiði: the remaining ~2 mm/yr against the published Sentinel-1 map; EGMS for 2019-2023.
 5. Automatic daily update (NGL rapid series + Quakes API) that appends to the volume and rate series.

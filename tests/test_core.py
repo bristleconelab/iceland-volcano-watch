@@ -217,6 +217,21 @@ class TestCovariance(unittest.TestCase):
         self.assertAlmostEqual(c2, float(np.sum(((A @ m2 - d) / s) ** 2)), places=8)
 
 
+class TestDikeGeometry(unittest.TestCase):
+    def test_line_of_epicentres_gives_strike_and_length(self):
+        import pandas as pd
+        from ivwlib import GEOD
+        from event_dike_losses import SRC, dike_geometry
+        rng = np.random.default_rng(1)
+        s = rng.uniform(-4.0, 4.0, 2000)               # km along a N35E line through a point 3 km east of the source
+        lon0, lat0, _ = GEOD.fwd(SRC["lon"], SRC["lat"], 90.0, 3000.0)
+        lon, lat, _ = GEOD.fwd(np.full(s.size, lon0), np.full(s.size, lat0), np.full(s.size, 35.0), s * 1e3)
+        g = dike_geometry(pd.DataFrame(dict(longitude=lon, latitude=lat)))
+        self.assertAlmostEqual(g["strike"], 35.0, delta=0.5)
+        self.assertAlmostEqual(g["length"], 0.95 * 8.0, delta=0.3)   # 2.5-97.5 % of a uniform 8 km line
+        self.assertAlmostEqual(g["e"], 3.0, delta=0.2)
+
+
 class TestRateFitting(unittest.TestCase):
     def series(self, rate_u=-16.4, n_days=1500, noise=3.0, seed=1):
         rng = np.random.default_rng(seed)
