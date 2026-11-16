@@ -195,7 +195,19 @@ GPS + radar with the correlated InSAR covariance in each window.
 - With elongated geometries (L = 3-6 km, all five windows) the five-station volume on 21 Jul 2026 is 21.0-30.2 Mm³;
   from the three two-track windows, 21.0-24.6 Mm³. IMO's 28.3 (27.5-29.1) lies at or above the top of this range.
 - Elongation trades with depth: the best line is 0.5-1 km shallower than the best point source.
+- The improvement is large for two extra parameters: Δχ² = 48, 277, 717, 200 and 43 between the point source and the
+  best line in the five windows.
+- A wider search (`scripts/elongated_centre_check.py`, `docs/data/elongated_centre_check.csv`; centre ±1.4 km,
+  strikes N30-105E) finds the same centre, strike, depth and volumes in all three two-track windows.
+- The line does not fit everything: in the up field of Apr-Jul 2025 an uplift lobe of up to ~15 mm west-south-west
+  of the source remains with both models (Fig. 1c below), and the line now over-predicts at SENG by about 10 mm.
 - Not tested: an exact spheroid, a dipping body, or a time-varying shape; the 2026 window has the ascending track only.
+
+![up field and residuals](docs/img/paper/fig1_up_field_residuals.png)
+
+![volume by station set](docs/img/paper/fig2_volume_by_station_set.png) ![volume series](docs/img/paper/fig3_volume_series.png)
+
+Figures: `scripts/paper_figures.py` (PNG and PDF at 85 / 175 mm width).
 
 **Uncertainty of the volumes.** SENG's sensitivity to the source is 18.1 / 14.4 / 9.5 mm per Mm³ at 3.25 / 3.75 /
 4.75 km depth. The same 450 mm of uplift is therefore 24.8, 31.4 or 47.3 Mm³ (`volume_sensitivity_source.csv`).
