@@ -4,10 +4,11 @@ Fig. 1  Up field Apr-Jul 2025 from ascending + descending Sentinel-1 (track_hv_c
         the published point source (Parks et al. 2025), the joint point source and the best 4 km line; residuals of
         the up field for the point source and for the line (geometry fixed from the joint fits, dV + offset + plane
         fitted to the up field).
-Fig. 2  Volume accumulated from the 22 Jul 2025 post-eruption level to 21 Jul 2026 by station set, point source
-        against the 4 km line (range over the three two-track windows' geometries), with IMO's 95 % interval.
-Fig. 3  Weekly volume series since 22 Jul 2025: SENG alone (published source), five stations with the published
-        point source, five stations with the 4 km line (I3 geometry), and IMO's two published values.
+Fig. 2  Cavity volume from the 22 Jul 2025 post-eruption level to 21 Jul 2026 by station set (vertical motion):
+        IMO's point source (any-four range for the five stations) against the pressurised prolate cavity of
+        cdm_source.py (range over the three two-track windows' geometries), with IMO's 95 % interval.
+Fig. 3  Weekly five-station volume since 22 Jul 2025 (vertical): IMO's point source and the pressurised prolate
+        (I3 geometry), SENG alone, and IMO's two published values.
 
     python -I scripts/paper_figures.py -> docs/img/paper/fig{1,2,3}.{png,pdf}
 Inputs are the CSVs written by network_volume.py and elongated_source.py and the cached LiCSAR chains.
@@ -115,50 +116,67 @@ def fig1(gn):
 
 
 def fig2():
+    """Volume 22 Jul 2025 - 21 Jul 2026 by station set: IMO's point source against the pressurised prolate cavity."""
+    import cdm_source as C
     imo = pd.read_csv(DATA / "imo_volume_comparison.csv").iloc[0]
-    e = pd.read_csv(DATA / "elongated_source_imo.csv")
-    e = e[e.window.isin(TWO_TRACK)]
-    rows = (("SENG alone", "seng_alone"), ("GEVK alone", "gevk_alone"), ("AUSV alone", "ausv_alone"),
-            ("Five stations, 3-D", "all5_3d"), ("Five stations, up", "all5_vertical"))
-    fig, ax = plt.subplots(figsize=(85 * MM, 58 * MM), constrained_layout=True)
+    st = pd.read_csv(DATA / "network_volume_station.csv").query("source == 'parks2025' and date == '2026-07-21'")
+    nv = pd.read_csv(DATA / "network_volume_imo.csv").query("source == 'parks2025' and date == '2026-07-21' "
+                                                             "and variant == 'vertical'")
+    cd = pd.read_csv(DATA / "cdm_source.csv")
+    cd = cd[cd.window.isin(TWO_TRACK)]
+    rows = (("SENG alone", "SENG", "seng_alone_0721"), ("GEVK alone", "GEVK", "gevk_alone_0721"),
+            ("AUSV alone", "AUSV", "ausv_alone_0721"), ("Five stations", None, "all5_vertical_0721"))
+    fig, ax = plt.subplots(figsize=(85 * MM, 55 * MM), constrained_layout=True)
     ax.axvspan(imo.imo_lo, imo.imo_hi, color=IMO_C, alpha=0.25, lw=0)
     ax.axvline(imo.imo_mm3, color=IMO_C, lw=0.8)
     ax.text(imo.imo_mm3 + 0.3, len(rows) - 0.45, "IMO", color=IMO_C, fontsize=6)
-    for i, (lab, col) in enumerate(rows):
+    for i, (lab, site, col) in enumerate(rows):
         yv = len(rows) - 1 - i
-        for L, c, dy, name in ((0.0, POINT, 0.12, "Point source"), (4.0, LINE, -0.12, "4 km line, N60E")):
-            v = e[e.L_km == L][col]
-            ax.errorbar(v.median(), yv + dy, xerr=[[v.median() - v.min()], [v.max() - v.median()]], fmt="o", ms=3.5,
-                        color=c, elinewidth=0.9, capsize=1.5, label=name if i == 0 else None)
+        if site:
+            v_pt = float(st[st.site == site].implied_mm3.iloc[0])
+            ax.plot(v_pt, yv + 0.12, "o", ms=3.5, color=POINT, label="IMO point source" if i == 0 else None)
+        else:
+            full = float(nv[nv.left_out == "none"].dv_mm3.iloc[0])
+            lo, hi = nv[nv.left_out != "none"].dv_mm3.min(), nv[nv.left_out != "none"].dv_mm3.max()
+            ax.errorbar(full, yv + 0.12, xerr=[[full - lo], [hi - full]], fmt="o", ms=3.5, color=POINT,
+                        elinewidth=0.9, capsize=1.5)
+            ax.text(hi + 0.3, yv + 0.12, "any four", fontsize=5.5, color=POINT, va="center")
+        v = cd[col]
+        ax.errorbar(v.median(), yv - 0.12, xerr=[[v.median() - v.min()], [v.max() - v.median()]], fmt="s", ms=3.2,
+                    color=LINE, elinewidth=0.9, capsize=1.5, label="Pressurised prolate cavity" if i == 0 else None)
     ax.set_yticks(range(len(rows)))
     ax.set_yticklabels([r[0] for r in rows][::-1])
-    ax.set_xlabel("Volume change 22 Jul 2025 - 21 Jul 2026 (Mm³)")
+    ax.set_xlabel("Cavity volume change, 22 Jul 2025 - 21 Jul 2026 (Mm³)")
     ax.set_xlim(15, 40)
-    ax.legend(frameon=False, loc="lower right", fontsize=6)
+    ax.legend(frameon=False, loc="center right", fontsize=6)
     save(fig, "fig2_volume_by_station_set")
 
 
 def fig3():
+    """Weekly five-station volume (vertical) with IMO's point source and with the pressurised prolate (I3 geometry)."""
+    import cdm_source as C
     s = pd.read_csv(DATA / "network_volume_series.csv", parse_dates=["date"])
     gclean, bg = N.load_clean(), N.background()
-    ln = geom("I3 2025-04-08", 4.0)
-    lv = []
+    r = pd.read_csv(DATA / "cdm_source.csv").set_index("window").loc["I3 2025-04-08"]
+    pc = dict(lon=r.lon, lat=r.lat, depth_km=r.depth_km, ax=r.ax_km, ay=r.ay_az_km, strike=r.strike)
+    pt, cv = [], []
     for t in s.date:
         obs = N.displacements(gclean, bg, t)
-        lv.append(E.fit_network(obs, ln, "3d")[0])
+        pt.append(N.fit(obs, G.PARKS, "vertical")[0])
+        cv.append(C.fit_network(obs, pc, "vertical")[0])
     imo = pd.read_csv(DATA / "imo_volume_comparison.csv", parse_dates=["date"])
     fig, ax = plt.subplots(figsize=(85 * MM, 58 * MM), constrained_layout=True)
-    ax.plot(s.date, s.seng_only_mm3, color=INK, lw=1.0, ls="--", label="SENG alone, point source")
-    ax.plot(s.date, s.network_dv_mm3, color=POINT, lw=1.2, label="Five stations, point source")
-    ax.plot(s.date, lv, color=LINE, lw=1.2, label="Five stations, 4 km line")
+    ax.plot(s.date, s.seng_only_mm3, color=INK, lw=1.0, ls="--", label="SENG alone, IMO point source")
+    ax.plot(s.date, pt, color=POINT, lw=1.2, label="Five stations, IMO point source")
+    ax.plot(s.date, cv, color=LINE, lw=1.2, label="Five stations, pressurised prolate")
     ax.errorbar(imo.date, imo.imo_mm3, yerr=[imo.imo_mm3 - imo.imo_lo, imo.imo_hi - imo.imo_mm3], fmt="s", ms=3,
                 color=IMO_C, capsize=1.5, elinewidth=0.9, label="IMO (95 %)")
-    ax.set_ylabel("Volume change since 22 Jul 2025 (Mm³)")
+    ax.set_ylabel("Volume since 22 Jul 2025 (Mm³)")
     ax.legend(frameon=False, fontsize=6, loc="upper left")
     ax.set_ylim(0, None)
     fig.autofmt_xdate()
     save(fig, "fig3_volume_series")
-    return float(lv[-1])
+    return float(pt[-1]), float(cv[-1])
 
 
 def main():
@@ -166,7 +184,7 @@ def main():
     rms = fig1(gn)
     fig2()
     last = fig3()
-    print("fig1 rms point/line mm:", [round(x, 2) for x in rms], "| fig3 last line volume", round(last, 2))
+    print("fig1 rms point/line mm:", [round(x, 2) for x in rms], "| fig3 last point/prolate", [round(x, 2) for x in last])
 
 
 if __name__ == "__main__":
