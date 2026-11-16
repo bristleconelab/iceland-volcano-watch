@@ -18,7 +18,7 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
   source fixed at 4 km, Parks et al. 2025) the volume accumulated by 21 Jul 2026 is 34.7 Mm³ from SENG alone,
   19.6-28.0 Mm³ from any multi-station subset of the five open stations, and 18-22 Mm³ from AUSV or GEVK alone.
   IMO's 28.3 Mm³ (27.5-29.1) lies at the top of the multi-station range. SENG sits on the north-east axis of the
-  elongated uplift, which a point source cannot reproduce (χ²/dof 14-24), so it overstates the volume. The earlier
+  elongated uplift, which a point source cannot reproduce (χ²/dof 14-22), so it overstates the volume. The earlier
   "1.2 times IMO" came from using SENG alone, not from a different model.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
@@ -151,15 +151,16 @@ post-eruption level of 22 Jul 2025 to 21 Jul 2026:
 
 | Stations | Volume (Mm³) | / IMO 28.3 |
 |---|---|---|
-| SENG alone (vertical; N44E of the source, 1.8 km) | 34.7 | 1.23 |
-| GEVK alone (vertical; N191E, 4.2 km) | 22.0 | 0.78 |
-| AUSV alone (vertical; N149E, 3.7 km) | 18.1 | 0.64 |
+| SENG alone (vertical; N34E of the source, 1.8 km) | 34.7 | 1.23 |
+| GEVK alone (vertical; N193E, 3.9 km) | 22.0 | 0.78 |
+| AUSV alone (vertical; N147E, 3.4 km) | 18.1 | 0.64 |
 | All five, east + north + up (with or without a common translation) | 22.6-22.8 | 0.80-0.81 |
 | All five, up only | 23.8 | 0.84 |
 | Any four of five (leave one out), all variants | 19.6-28.0 | 0.69-0.99 |
 
 - VOGC and NYLA are 13-18 km away (0.3 and 0.15 mm per Mm³); alone they give no usable volume.
-- The point source does not fit the five stations (χ²/dof 14-24 at this date), and the misfit grows through the cycle
+- The point source does not fit the five stations (χ²/dof 14-22 for the all-station fits at this date, 3.3-26.7
+  over the leave-one-out fits), and the misfit grows through the cycle
   (`network_volume_series.csv`). Parks et al. note the inflation is elongated north-east, which a point source
   cannot capture. SENG lies on that axis, AUSV and GEVK off it (towards Grindavík), so SENG reads high.
 - The radar agrees only in part: per window, SENG alone gives 0.95-1.30 times the joint GPS + radar volume, and
