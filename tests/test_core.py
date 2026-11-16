@@ -432,5 +432,44 @@ class TestElongatedSource(unittest.TestCase):
         self.assertAlmostEqual(gz_e90, gz_n, places=9)
 
 
+class TestCDM(unittest.TestCase):
+    """The CDM port (Nikkhoo et al. 2017) against independent solutions."""
+
+    def setUp(self):
+        rng = np.random.default_rng(1)
+        self.e, self.n = rng.uniform(-12, 12, 200), rng.uniform(-12, 12, 200)
+
+    def test_flat_cdm_is_okada_sill(self):
+        import cdm
+        from okada import rect_source
+        for oz in (0.0, 30.0, -55.0):
+            got = cdm.cdm(self.e, self.n, 0.7, -0.4, 4.0, 0, 0, oz, 3.0, 1.0, 0.0, 1.0)[:3]
+            ref = rect_source(self.e, self.n, 0.7, -0.4, 4.0, 6.0, 2.0, 90 + oz, 0.0, opening=1.0)
+            for a, b in zip(got, ref):
+                np.testing.assert_allclose(a, b, atol=1e-12)
+
+    def test_thin_cdm_is_okada_dike(self):
+        import cdm
+        from okada import rect_source
+        got = cdm.cdm(self.e, self.n, 0.3, 0.2, 3.0, 0, 0, 40.0, 0.0, 2.5, 1.0, 1.0)[:3]
+        ref = rect_source(self.e, self.n, 0.3, 0.2, 3.0, 5.0, 2.0, 40.0, 90.0, opening=1.0)
+        for a, b in zip(got, ref):
+            np.testing.assert_allclose(a, b, atol=1e-12)
+
+    def test_small_isotropic_cdm_is_mogi_in_cavity_volume(self):
+        import cdm_source as C
+        x, y = np.array([1.0, 3.0, -5.0, 8.0]), np.array([0.5, -2.0, 4.0, 1.0])
+        gz = C.cdm_greens(x, y, dict(ax=0.05, ay=0.05, strike=60.0, depth_km=4.0))[2]
+        np.testing.assert_allclose(gz, mogi(x, y, 4.0, 1e6)[2] * 1e3, rtol=5e-4)
+
+    def test_cavity_to_potency_ratio(self):
+        import cdm
+        dV, DV, pot = cdm.pressurised_ellipsoid(1.0, 1.0, 1.0)
+        self.assertAlmostEqual(dV / DV, 1.25 / 2.25, places=12)           # (1 + nu) / (3 (1 - nu)), nu = 0.25
+        dV, DV, pot = cdm.pressurised_ellipsoid(3.0, 1.0, 1.0)
+        self.assertGreater(dV / DV, 1.25 / 2.25)
+        self.assertAlmostEqual(pot[1], pot[2], places=12)
+
+
 if __name__ == "__main__":
     unittest.main()
