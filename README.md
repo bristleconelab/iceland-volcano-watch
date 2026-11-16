@@ -19,7 +19,9 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
   19.6-28.0 Mm³ from any multi-station subset of the five open stations, and 18-22 Mm³ from AUSV or GEVK alone.
   IMO's 28.3 Mm³ (27.5-29.1) lies at the top of the multi-station range. SENG sits on the north-east axis of the
   elongated uplift, which a point source cannot reproduce (χ²/dof 14-22), so it overstates the volume. The earlier
-  "1.2 times IMO" came from using SENG alone, not from a different model.
+  "1.2 times IMO" came from using SENG alone, not from a different model. A source elongated along the crater row
+  (N60E, about 3-4 km long) fits the radar better and brings the stations within a factor of 1.1-1.4; the
+  five-station volume is then 21-25 Mm³ (21-30 over all windows), at or below IMO's figure.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -170,6 +172,31 @@ post-eruption level of 22 Jul 2025 to 21 Jul 2026:
 - IMO's 95 % interval (±3 %) is a formal error for one fixed model and network. The spread between station sets here
   is about −30 % to +23 %. Ratios between cycles stay valid because one fixed model and station is used for all.
 
+**An elongated source (`scripts/elongated_source.py`, `docs/data/elongated_source.csv`, `elongated_source_imo.csv`).**
+The source is a horizontal line of nine point sources (length L, strike, depth; L = 0 is the point source), a simple
+stand-in for a body elongated along the crater row; it is not the exact Yang et al. (1988) spheroid. It is fitted to
+GPS + radar with the correlated InSAR covariance in each window.
+
+| | Point source | Line, L = 4 km | Line, L = 6 km |
+|---|---|---|---|
+| Best strike and depth | 4.0-4.75 km | N60E (N45E 2026), 3.25-4.25 km | N60E (N45E 2026), 3.0-3.75 km |
+| χ²/dof, five windows | 0.18, 1.66, 0.95, 0.54, 0.49 | 0.15, 1.41, 0.64, 0.45, 0.47 | 0.13, 1.37, 0.57, 0.42, 0.45 |
+| East/up volume ratio (3 windows) | 1.01, 0.94, 1.04 | 0.93, 0.86, 0.96 | 0.86, 0.80, 0.81 |
+| 21 Jul 2026, SENG / AUSV / GEVK alone | 33.0-36.3 / 20.5-21.4 / 24.7-25.5 | 25.4-28.4 / 20.5-20.9 / 22.9-23.4 | 24.9-27.9 / 22.4-22.6 / 22.7-23.1 |
+| 21 Jul 2026, all five stations | 23.7-26.1 (χ²/dof 20) | 21.0-23.0 (12) | 22.7-24.6 (7) |
+
+(Volumes in Mm³; the 21 Jul rows use the geometry of the three windows with both tracks, Dec 2024-Nov 2025.)
+
+- The line fits the radar better than the point source in every window, with its long axis along the crater row
+  (N45-60E). It also brings the stations together: the spread between SENG, AUSV and GEVK falls from a factor of
+  1.6-1.7 to 1.1-1.4, and the five-station misfit from χ²/dof 20 to 7.
+- The east/up test (above) prefers the shorter lines: L = 2-4 km keeps the ratio at 0.86-1.02, L = 6 km drops it to
+  0.80-0.86. A body about 3-4 km long along N60E fits all three checks best.
+- With elongated geometries (L = 3-6 km, all five windows) the five-station volume on 21 Jul 2026 is 21.0-30.2 Mm³;
+  from the three two-track windows, 21.0-24.6 Mm³. IMO's 28.3 (27.5-29.1) lies at or above the top of this range.
+- Elongation trades with depth: the best line is 0.5-1 km shallower than the best point source.
+- Not tested: an exact spheroid, a dipping body, or a time-varying shape; the 2026 window has the ascending track only.
+
 **Uncertainty of the volumes.** SENG's sensitivity to the source is 18.1 / 14.4 / 9.5 mm per Mm³ at 3.25 / 3.75 /
 4.75 km depth. The same 450 mm of uplift is therefore 24.8, 31.4 or 47.3 Mm³ (`volume_sensitivity_source.csv`).
 - In the fits, depth and ΔV are correlated (0.87-0.95). With errors rescaled by sqrt(χ²/dof), 1σ is 0.7-1.0 km in
@@ -300,7 +327,7 @@ untested.
 
 ```bash
 uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
-.venv/bin/python -I -m unittest discover -s tests -v      # 34 synthetic tests, no data needed
+.venv/bin/python -I -m unittest discover -s tests -v      # 36 synthetic tests, no data needed
 ```
 
 The full pipeline (downloads about 190 MB into the git-ignored `data/`) is in [docs/method.md](docs/method.md).
@@ -329,8 +356,8 @@ The repository holds only derived tables and figures. Raw downloads stay in `dat
 2. Done 2026-11-16: Okada dikes give event losses consistent with the published pattern (about 1.2 times larger);
    events 3 and 10 need more than one uniform dike.
 3. Done 2026-11-16: the ~1.2 factor against IMO comes from converting SENG alone; with IMO's model, multi-station
-   volumes are 19.6-28.0 Mm³ against IMO's 28.3 (`network_volume.py`). Open: an elongated source that fits all
-   stations and the radar.
+   volumes are 19.6-28.0 Mm³ against IMO's 28.3 (`network_volume.py`). A source elongated along N60E fits the radar
+   better and brings the stations together (`elongated_source.py`). Open: an exact spheroid; IMO's station set.
 4. Find out why the Aug 2025-Oct 2026 interval fits poorly with one Mogi source (χ²/dof 30).
 5. Hellisheiði: the remaining ~2 mm/yr against the published Sentinel-1 map; EGMS for 2019-2023.
 6. Automatic daily update (NGL rapid series + Quakes API) that appends to the volume and rate series.

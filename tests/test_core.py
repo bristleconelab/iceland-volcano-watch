@@ -412,5 +412,25 @@ class TestNetworkVolume(unittest.TestCase):
         self.assertAlmostEqual(float(N.greens(seng, dict(lon=-22.454, lat=63.869, depth_km=4.0))[2][0]), 11.38, places=2)
 
 
+class TestElongatedSource(unittest.TestCase):
+    def test_zero_length_is_mogi_and_far_field_is_point(self):
+        import elongated_source as E
+        x, y = np.array([1.0, -2.0, 0.5]), np.array([0.3, 1.5, -3.0])
+        for a, b in zip(E.line_greens(x, y, 4.0, 0.0, 0), mogi(x, y, 4.0, 1.0)):
+            np.testing.assert_allclose(a, b * 1e9)
+        far = E.line_greens(np.array([60.0]), np.array([0.0]), 4.0, 6.0, 60)
+        pt = mogi(np.array([60.0]), np.array([0.0]), 4.0, 1.0)
+        np.testing.assert_allclose(far[0], pt[0] * 1e9, rtol=0.02)
+
+    def test_strike_convention(self):
+        import elongated_source as E
+        # a N0E line is longer in y: the uplift 2 km north exceeds the uplift 2 km east
+        gz_n = E.line_greens(np.array([0.0]), np.array([2.0]), 3.0, 6.0, 0)[2][0]
+        gz_e = E.line_greens(np.array([2.0]), np.array([0.0]), 3.0, 6.0, 0)[2][0]
+        self.assertGreater(gz_n, gz_e)
+        gz_e90 = E.line_greens(np.array([2.0]), np.array([0.0]), 3.0, 6.0, 90)[2][0]
+        self.assertAlmostEqual(gz_e90, gz_n, places=9)
+
+
 if __name__ == "__main__":
     unittest.main()
