@@ -30,7 +30,12 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
   five-station volume (22.1 against 21.7 Mm³; `station_volume_geometry.csv`). The radar accepts that depth only for
   an elongated body: a point source at 3.25-3.5 km fits the radar worse than at 4-4.25 km by Δχ² 170-530, while an
   elongated body at 3.25-3.5 km fits better than any point source by Δχ² 150-410
-  (`station_volume_geometry_radar_chi2.csv`).
+  (`station_volume_geometry_radar_chi2.csv`). The result does not depend on the GNSS being in the fit: with
+  geometries fitted to the radar alone (`insar_only_geometry.csv`) the 6 km line is again preferred and gives
+  SENG/AUSV 1.11-1.48, against 1.61-1.88 for the radar-only point source.
+- **Unknown background at AUSV and GEVK** (`background_sensitivity.csv`): an assumed −10 to +5 mm/yr trend changes
+  their single-station volumes by 0.7-1.8 Mm³ and the five-station volume to 23.1-25.1 Mm³ (IMO's source). With the
+  6 km line and −10 mm/yr, the three stations agree within 3 %; the true trend is not known.
 - **Which elongated body.** A line of point sources about 6 km long along N60E reproduces the observed second
   harmonic (24-28 % predicted, N60E) and fits the radar best; a single uniformly pressurised prolate cavity
   (compound dislocation model, Nikkhoo et al. 2017) reproduces the axis but only 5-7 % amplitude and fits worse than
@@ -38,7 +43,9 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
   example several compact pockets (Lanzi et al. 2025 raise multiple pockets). The elongation itself is known
   (Parks et al. 2025; Lanzi et al. EGU26-12710; Sigmundsson et al. IAVCEI 2025). Neither model explains the WNW
   first harmonic, i.e. the residual uplift west-south-west of the source (34-46 mm against 215 mm peak,
-  `robustness_residual_lobe.csv`).
+  `robustness_residual_lobe.csv`). A second point source added to the line (`two_source.csv`) does not settle there: it lands
+  next to the main source in most windows, carries 1-18 % of the volume and improves χ² by 1-71, so the lobe is not
+  a separate pocket in this data.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme

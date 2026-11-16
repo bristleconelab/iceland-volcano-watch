@@ -1,0 +1,9 @@
+background_mm_per_yr,source,seng_alone,ausv_alone,gevk_alone,all5_vertical,chi2_dof,seng_over_ausv
+-10.0,IMO point source,34.75,19.6,23.82,25.1,11.9,1.773
+-10.0,line L=6 N60E (I3),24.92,24.21,24.58,24.59,1.91,1.029
+-5.0,IMO point source,34.75,18.85,22.93,24.44,13.06,1.844
+-5.0,line L=6 N60E (I3),24.92,23.29,23.66,24.13,2.02,1.07
+0.0,IMO point source,34.75,18.11,22.04,23.77,14.3,1.919
+0.0,line L=6 N60E (I3),24.92,22.36,22.74,23.65,2.26,1.114
+5.0,IMO point source,34.75,17.36,21.14,23.1,15.63,2.002
+5.0,line L=6 N60E (I3),24.92,21.44,21.82,23.16,2.62,1.162
