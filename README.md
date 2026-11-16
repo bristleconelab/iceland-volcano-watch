@@ -9,10 +9,11 @@ free data: GNSS stations, Sentinel-1 radar interferograms and the Icelandic Met 
 - how fast the Hengill and Svartsengi geothermal fields are sinking.
 
 **Main findings so far**
-- Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source near −22.46 E, 63.87 N at 4-5 km depth, and the
-  recharge volume then depends mainly on the source **shape**. On 21 Jul 2026: 29.7-36.3 Mm³ with a point (Mogi)
-  source, 26.4-32.4 Mm³ with the better-fitting 6 x 2 km horizontal sill. The Icelandic Met Office's 28.3 Mm³
-  (27.5-29.1) lies inside the combined range.
+- Adding Sentinel-1 radar to the GPS fit pins the Svartsengi source near −22.46 E, 63.87 N at 4-5.5 km depth. The
+  recharge volume read from the SENG station still depends on the source **shape and the window the geometry comes
+  from**: 24.5-43.7 Mm³ on 21 Jul 2026 across a point source and a 6 x 2 km sill fitted in five windows. The Icelandic
+  Met Office's 28.3 Mm³ (27.5-29.1) lies inside this range; the geometry of the current cycle alone (Apr-Oct 2026, one
+  track) gives 36.7-43.7 Mm³, above IMO.
 - From March 2024 to July 2025 every new dike came after 17-22 Mm³ of recharge. The current cycle has passed
   32 Mm³ without one, so that pattern no longer holds.
 - The published 24-26 mm/yr subsidence at Hellisheiði and our 13-15 mm/yr measure different things (one extreme
@@ -58,7 +59,8 @@ same convention, so the comparisons below are like with like.
 | SENG uplift, 3 months to 15 Sep / 30 Sep 2026 | 49.2 / 41.1 mm | IMO "about 5 cm" / "about 4 cm" | consistent |
 | Current cycle to 17 Oct 2026 (452 days from the post-event level) | **32.5 Mm³**; inflow per 3 months 1.23 → 0.97 → 0.56 → 0.51 → 0.47 m³/s | IMO: slowest accumulation so far | largest recharge of any cycle, lowest inflow |
 
-**Joint GPS + radar fit (added 2026-11-16, `scripts/svartsengi_joint.py`).** Chained 6- and 12-day LiCSAR
+**Joint GPS + radar fit (added 2026-11-16, `scripts/svartsengi_joint.py`; diagonal weights, superseded for the
+uncertainties by the correlated-noise section below).** Chained 6- and 12-day LiCSAR
 interferograms (ascending 016A and descending 155D) over each inflation window, block-medianed to 937-1,878
 points per window, are fitted together with the GPS displacements over the same dates (`docs/data/joint_fits.csv`, figures
 `docs/img/joint_fit_*.png`).
@@ -73,7 +75,7 @@ points per window, are fitted together with the GPS displacements over the same 
 - The joint source lies 1.58 km from SENG instead of 1.29 km. For the SENG volume series this scales the volumes by
   1.02, 1.13 and 1.25 at 3.75, 4.0 and 4.25 km: 29.1 becomes 29.7, 32.9 and 36.3 Mm³ on 21 Jul 2026.
 
-**Sill instead of a point source (`scripts/svartsengi_sill.py`, `docs/data/joint_sill.csv`).** A horizontal Okada
+**Sill instead of a point source (`scripts/svartsengi_sill.py`, `docs/data/joint_sill.csv`; diagonal weights).** A horizontal Okada
 rectangle (checked against Okada 1985 Table 2 in `tests/test_core.py`) fits better than the Mogi source in four of five
 windows (χ²/dof 0.99 / 5.33 / 4.37 / 2.25 against 1.86 / 5.80 / 4.81 / 2.28; the 2026 window is worse, 2.24 against
 1.99).
@@ -85,6 +87,25 @@ windows (χ²/dof 0.99 / 5.33 / 4.37 / 2.25 against 1.86 / 5.80 / 4.81 / 2.28; t
   (horizontal motion, atmosphere, nearby geothermal subsidence); not resolved.
 - Applied to the SENG volume series, the sill geometries scale the volumes by 0.91-1.11: 29.1 becomes 26.4-32.4 Mm³
   on 21 Jul 2026.
+
+**Correlated radar noise (`scripts/joint_covariance.py`, `docs/data/joint_covariance.csv`,
+`docs/data/insar_covariance.json`).** The joint fits above treat the radar blocks as independent. Here an exponential
+covariance s² exp(−r/λ) plus a white nugget is fitted to the residuals more than 12 km from the source of every window
+and track (λ = 0.6-4.1 km, s = 3.3-9.1 mm, nugget 0.6-3.8 mm) and both models are refitted with the full covariance.
+- χ²/dof becomes 0.1-1.7, so this noise model is realistic (values below 1 mean it is, if anything, conservative).
+- Within one model and window the depth is still fixed to one 0.25-km step and dV to ±0.1-0.3 Mm³ (1σ). The
+  statistical uncertainty is small; what matters is the systematic spread between source shapes and windows:
+
+| Geometry from window | Point source: depth, dV | 6 x 2 km sill: depth, dV | SENG volume on 21 Jul 2026, point / sill |
+|---|---|---|---|
+| Oct-Nov 2024 (ascending only) | 4.25-4.5 km, 6.8 Mm³ | 4.5-4.75 km, 6.5 Mm³ | 34.5-38.1 / 29.8-32.0 Mm³ |
+| Dec 2024-Mar 2025 | 4.25 km, 19.6 Mm³ | 4.75 km, 16.5 Mm³ | 36.3 / 29.8 Mm³ |
+| Apr-Jul 2025 | 4.0 km, 17.1 Mm³ | 4.25 km, 14.2 Mm³ | 32.9 / 24.5 Mm³ |
+| Aug-Nov 2025 | 4.25 km, 13.5 Mm³ | 4.75 km, 12.1 Mm³ | 36.3 / 28.3 Mm³ |
+| Apr-Oct 2026 (ascending only) | 4.75 km, 8.3 Mm³ | 5.5 km, 7.3 Mm³ | 43.7 / 36.7 Mm³ |
+
+IMO's 28.3 Mm³ (27.5-29.1) for 21 Jul 2026 lies inside the 24.5-43.7 Mm³ spread. The radar fixes where the source is,
+but not which shape is right, and the shape decides how much volume one millimetre of uplift at SENG means.
 
 **Uncertainty of the volumes.** SENG's sensitivity to the source is 18.1 / 14.4 / 9.5 mm per Mm³ at 3.25 / 3.75 /
 4.75 km depth. The same 450 mm of uplift is therefore 24.8, 31.4 or 47.3 Mm³ (`volume_sensitivity_source.csv`).

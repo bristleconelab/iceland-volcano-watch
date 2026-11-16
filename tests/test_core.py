@@ -186,6 +186,37 @@ class TestJoint(unittest.TestCase):
             self.assertEqual(c, ["20250101_20250113", "20250113_20250125", "20250125_20250131"])
 
 
+class TestCovariance(unittest.TestCase):
+    def test_exponential_covariance_recovered(self):
+        # synthetic field with known exponential covariance (s = 3 mm, lam = 2.5 km) plus white noise (1 mm)
+        from joint_covariance import fit_covariance
+        rng = np.random.default_rng(3)
+        g = np.arange(0, 20, 0.5)
+        x, y = [a.ravel() for a in np.meshgrid(g, g)]
+        r = np.hypot(x[:, None] - x[None, :], y[:, None] - y[None, :])
+        C = 9.0 * np.exp(-r / 2.5) + 1.0 * np.eye(len(x))
+        v = np.linalg.cholesky(C) @ rng.standard_normal(len(x))
+        c = fit_covariance(x, y, v)
+        self.assertAlmostEqual(c["lam_km"], 2.5, delta=1.0)
+        self.assertAlmostEqual(np.sqrt(c["s2"]), 3.0, delta=1.0)
+
+    def test_whitened_solve_equals_weighted_lstsq_for_diagonal_covariance(self):
+        import pandas as pd
+        import svartsengi_gnss as G
+        from joint_covariance import whitened_solve
+        obs = pd.DataFrame(dict(site=["A", "B"], lon=[0, 0], lat=[0, 0], de=[1.0, 2.0], dn=[0.5, -1.0], du=[3.0, 4.0]))
+        ins = {"F": pd.DataFrame(dict(los=np.array([1.0, 2.0, 0.5])))}
+        rng = np.random.default_rng(0)
+        A = rng.standard_normal((9, 3))
+        d = np.r_[G.data_vector(obs), ins["F"].los.values]
+        sig_i = 2.0
+        m, c2, _ = whitened_solve(A, d, obs, ins, {"F": sig_i * np.eye(3)})
+        s = np.r_[G.sigmas(d[:6], 2), np.full(3, sig_i)]
+        m2, *_ = np.linalg.lstsq(A / s[:, None], d / s, rcond=None)
+        np.testing.assert_allclose(m, m2, rtol=1e-10)
+        self.assertAlmostEqual(c2, float(np.sum(((A @ m2 - d) / s) ** 2)), places=8)
+
+
 class TestRateFitting(unittest.TestCase):
     def series(self, rate_u=-16.4, n_days=1500, noise=3.0, seed=1):
         rng = np.random.default_rng(seed)
