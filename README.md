@@ -86,3 +86,15 @@ against published values where they exist. Mistakes found along the way are logg
 ## Licence
 
 Code: MIT ([LICENSE](LICENSE)); the CDM port keeps its original MIT notice. Derived tables and figures: CC BY 4.0.
+
+---
+
+<p align="center">
+  <sub>Powered by</sub><br>
+  <a href="https://github.com/bristleconelab">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/img/brand/bristleconelab-horizontal-on-dark.svg">
+      <img src="docs/img/brand/bristleconelab-horizontal-on-light.svg" alt="bristlecone lab" height="36">
+    </picture>
+  </a>
+</p>
