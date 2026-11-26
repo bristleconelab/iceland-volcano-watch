@@ -53,7 +53,7 @@ responses: [docs/review-2026-11-16.md](docs/review-2026-11-16.md).
 
 ```bash
 uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
-.venv/bin/python -I -m unittest discover -s tests -v      # 40 tests on synthetic cases, no data needed
+.venv/bin/python -I -m unittest discover -s tests -v      # 41 tests on synthetic cases, no data needed
 ```
 
 The full pipeline downloads about 190 MB into the git-ignored `data/`; the steps are in

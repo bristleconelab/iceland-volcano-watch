@@ -271,6 +271,17 @@ class TestRateFitting(unittest.TestCase):
         _, steps = clean_series(df, event_dates=[pd.Timestamp("2017-03-02")])
         self.assertEqual(steps, [])
 
+    def test_clean_series_step_in_first_days(self):
+        # a step on day 3 or 4 is found at i = win with j < win; the offset must stay finite and Up must not turn NaN
+        for k in (3, 4):
+            df = self.series(noise=1.0)
+            df.iloc[k:, df.columns.get_loc("u")] += 470.0
+            out, steps = clean_series(df, event_dates=[])
+            self.assertEqual(len(steps), 1)
+            self.assertEqual(steps[0]["date"], df.index[k].date().isoformat())
+            self.assertAlmostEqual(steps[0]["offset_up_mm"], 470.0, delta=10)
+            self.assertFalse(out["u"].isna().any())
+
 
 class TestMogiFit(unittest.TestCase):
     def test_grid_fit_recovers_source(self):
