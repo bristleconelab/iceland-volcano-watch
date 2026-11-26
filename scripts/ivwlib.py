@@ -99,7 +99,8 @@ def clean_series(df: pd.DataFrame, event_dates, min_step_mm: float = 150.0, max_
             # locate the jump precisely: the largest single-day change in the rolling-median series
             seg = d["u"].iloc[i - win:i + win].rolling(3, center=True, min_periods=1).median()
             j = i - win + int(np.argmax(np.abs(np.diff(seg.values)))) + 1
-            off = d["u"].iloc[j:j + win].median() - d["u"].iloc[j - win:j].median()
+            # j can be < win for a step in the first days; a negative start would select nothing and give NaN
+            off = d["u"].iloc[j:j + win].median() - d["u"].iloc[max(j - win, 0):j].median()
             d.loc[d.index >= idx[j], "u"] -= off
             steps.append({"date": idx[j].date().isoformat(), "offset_up_mm": round(float(off), 1)})
             i = j + win
